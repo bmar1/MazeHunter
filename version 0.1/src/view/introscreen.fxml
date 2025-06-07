@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="highPane" id="highPane" prefHeight="768.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.IntroController">
+   <children>
+      <AnchorPane id="pane" fx:id="anchorPane" layoutX="7.0" layoutY="14.0" prefHeight="850.0" prefWidth="1112.0">
+         <children>
+            <Text id="welcome" fill="WHITE" layoutX="308.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to MazeHunter!">
+               <font>
+                  <Font name="Morris Roman Black" size="52.0" />
+               </font>
+            </Text>
+            
+            <!-- Play Solo Door -->
+            <AnchorPane fx:id="playSoloPane" layoutX="280.0" layoutY="450.0" prefHeight="200" prefWidth="388.0">
+                <children>
+                    <ImageView fx:id="playSoloImage" fitHeight="200" fitWidth="150" onMouseClicked="#soloClick" onMouseEntered="#openDoor" onMouseExited="#closeDoor" />
+                    <Text fill="WHITE" layoutX="28.0" layoutY="0.0" text="Play Solo">
+                        <font>
+                            <Font name="Morris Roman Black" size="28.0" />
+                        </font>
+                    </Text>
+                </children>
+            </AnchorPane>
+
+            <!-- Play Duo Door -->
+            <AnchorPane fx:id="playDuoPane" layoutX="680.0" layoutY="450.0" prefHeight="200" prefWidth="150">
+                <children>
+                    <ImageView fx:id="playDuoImage" fitHeight="200" fitWidth="150" onMouseClicked="#duoClick" onMouseEntered="#openDoor" onMouseExited="#closeDoor" />
+                    <Text fill="WHITE" layoutX="28.0" layoutY="0.0" text="Play Duo">
+                        <font>
+                            <Font name="Morris Roman Black" size="28.0" />
+                        </font>
+                    </Text>
+                </children>
+            </AnchorPane>
+        </children>
+      </AnchorPane>
+
+      <!-- Overlay Pane -->
+      <Pane fx:id="blackOverlay" mouseTransparent="true" prefHeight="878.0" prefWidth="1126.0" style="-fx-background-color: black; opacity: 0;" />
+   </children>
+</AnchorPane>
