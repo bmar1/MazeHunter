@@ -47,9 +47,9 @@ public class GameController {
 		// Create maze based on difficulty
 		// maze = new Maze(introController.getDifficulty().equals("Easy") ? 21 :
 		// introController.getDifficulty().equals("Medium") ? 31 : 41);
-		
-		//counter determined on diffculty 3 if hard 2 med etc
-		//gameLayer.getChildren().clear();
+
+		// counter determined on diffculty 3 if hard 2 med etc
+		// gameLayer.getChildren().clear();
 
 		maze = new Maze(31);
 		setMaze(maze);
@@ -64,10 +64,9 @@ public class GameController {
 		drawMaze(grid, size, mazeGrid, gameLayer, centerX, centerY);
 	}
 
-	//Generates maze on screen given maze co-ords
+	// Generates maze on screen given maze co-ords
 	public void drawMaze(GridPane grid, int size, int[][] mazeGrid, Group gameLayer, int centerX, int centerY) {
-		
-		
+
 		List<Node> toRemove = new ArrayList<>();
 		for (Node node : grid.getChildren()) {
 			toRemove.add(node);
@@ -80,9 +79,8 @@ public class GameController {
 		// circle
 		int visibleTiles = radius * 2 + 1; // diameter of visible circle
 		int cellSize = (int) Math.min(1420.0 / visibleTiles, 850.0 / visibleTiles);
-		
 
-		//Calculate our start and end positions of the circle in maze
+		// Calculate our start and end positions of the circle in maze
 		int startX = Math.max(0, centerX - radius);
 		int startY = Math.max(0, centerY - radius);
 		int endX = Math.min(size - 1, centerX + radius + 1);
@@ -125,24 +123,13 @@ public class GameController {
 
 			}
 		}
-		int totalMazePixelWidth = visibleTiles * cellSize;
-		int totalMazePixelHeight = visibleTiles * cellSize;
 
-		int drawOffsetX = (1340 - totalMazePixelWidth) / 2;
-		int drawOffsetY = (960 - totalMazePixelHeight) / 2;
-
-		//grid.setLayoutX(drawOffsetX);
-		//grid.setLayoutY(drawOffsetY);
-		
-		//declare fog, otherwise redraw fog
+		// declare fog, otherwise redraw fog
 		if (fog == null || fog.getFogCanvas() == null || !gameLayer.getChildren().contains(fog.getFogCanvas())) {
 			fog = new Fog(visibleTiles, visibleTiles, cellSize, radius, centerX, centerY);
 			gameLayer.getChildren().add(fog.getFogCanvas());
-		//	fog.getFogCanvas().setLayoutX(drawOffsetX);
-			//fog.getFogCanvas().setLayoutY(drawOffsetY);
-		}
-		
-		else fog.updateFog(centerX, centerY, visibleTiles, visibleTiles, radius);
+		}else
+			fog.updateFog(centerX, centerY, visibleTiles, visibleTiles, radius);
 	}
 
 	private void drawImg(String imagePath, int cellType, GridPane grid, int cellSize, int col, int row) {
@@ -211,7 +198,5 @@ public class GameController {
 	public void setCounter(int counter) {
 		this.counter = counter;
 	}
-	
-	
 
 }

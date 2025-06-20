@@ -2,12 +2,14 @@ package controller;
 
 import java.io.InputStream;
 
+import javafx.animation.PauseTransition;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import model.*;
 import view.*;
 
@@ -15,11 +17,14 @@ public class PlayerController {
 
 	private IntroController introController;
 	private GameController gameController;
+	private GridPane grid;
 
 	private int player1X;
 	private int player1Y;
 	private int player2X;
 	private int player2Y;
+
+	private String direction;
 
 	private Player player;
 	private Player player2;
@@ -31,22 +36,25 @@ public class PlayerController {
 
 	private StackPane root;
 	private Group gameLayer;
+	
 
 	public PlayerController(StackPane root, Group gameLayer, GridPane grid, GameController gameController) {
 		this.root = root;
 		this.gameController = gameController;
 		this.gameLayer = gameLayer;
+		this.grid = grid;
 		init(root, gameLayer, grid);
+		direction = "Right";
 	}
 
 	// on initialization,
 	private void init(StackPane root, Group gameLayer, GridPane grid) {
 
 		player = new Player("Bob", this, gameController, 1);
-		//player2 = new Player(introController.getPlayer1(), this, gameController, 2);
+		// player2 = new Player(introController.getPlayer1(), this, gameController, 2);
 
 		// playerClass = player.getUserClass(introController.getUserClass());
-		playerClass = player.getUserClass("Visionary");
+		playerClass = player.getUserClass("Runner");
 
 		// playerClass2 = player.getUserClass(introController.getUserClass()); //change
 		// this to get user class 2
@@ -82,17 +90,22 @@ public class PlayerController {
 		Image image = new Image(stream);
 		ImageView imageView = new ImageView(image);
 
+		imageView.setPreserveRatio(false);
 		imageView.setFitWidth(cellSize);
 		imageView.setFitHeight(cellSize);
 
-		setPlayerImage1View(imageView);
+		if (playerClass.getAbility().isActive() && playerClass.getUserClass().equals("Psychic")) {
+			imageView.setOpacity(0.6);
+		}
 
 		if (!flag) {
 			setPlayer1X(centerX);
 			setPlayer1Y(centerY);
+			setPlayerImage1View(imageView);
 		} else {
 			setPlayer2X(centerX);
 			setPlayer2Y(centerY);
+			setPlayerImage2View(imageView);
 		}
 
 		int startX = Math.max(0, centerX - gameController.getRadius());
@@ -102,9 +115,6 @@ public class PlayerController {
 		grid.setOnKeyPressed(event -> onKeyPressed(event, imageView, playerClass, grid, player));
 
 		grid.add(imageView, centerY - startY, centerX - startX);
-
-		// grid.add(imageView, centerX, centerY);
-
 	}
 
 	private void onKeyPressed(KeyEvent ev, ImageView playerImg, Userclass playerClass, GridPane grid, Player player) {
@@ -170,6 +180,8 @@ public class PlayerController {
 		// move player coord img based on direction
 		int newX;
 		int newY;
+		boolean psyActive = playerClass.getUserClass().equals("Psychic") && playerClass.getAbility().isActive();
+
 		if (player.getPlayerID() == 1) {
 			newX = getPlayer1X();
 			newY = getPlayer1Y();
@@ -198,21 +210,26 @@ public class PlayerController {
 		}
 
 		// check if cell is walkable or if ability is active to pass through a wall
-		if (!gameController.getMaze().isWalkable(newX, newY, gameController.getMaze().getGrid())
-				&& !(playerClass.getUserClass().equals("Psychic") && playerClass.getAbility().isActive())) {
-
+		if (!gameController.getMaze().isWalkable(newX, newY, gameController.getMaze().getGrid()) && !psyActive) {
+			System.out.println(playerClass.getAbility().isActive());
 			System.out.println(newX + ":" + newY);
 			System.out.println("ABORTED!");
 			// if not walkable, take no action and play noise to indicate
 			// play noise
 			return;
 		}
+		else if (player.isLockout())
+			return;
+
+		setDirection(direction);
 
 		// check if on an exit,
 		if (gameController.getMaze().isExit(newX, newY, gameController.getMaze().getGrid())
 				&& gameController.getCounter() <= 1) {
+			// new exit screen
 
-		} else {
+		} else if (gameController.getMaze().isExit(newX, newY, gameController.getMaze().getGrid())
+				&& gameController.getCounter() > 1) {
 			int ctr = gameController.getCounter() - 1;
 			// restart entire game, delete previous screen
 			// gameController = new GameController(root, gameLayer, grid);
@@ -222,8 +239,7 @@ public class PlayerController {
 		if (player.getPlayerID() == 1) {
 			setPlayer1X(newX);
 			setPlayer1Y(newY);
-		}
-		else {
+		} else {
 			setPlayer2X(newX);
 			setPlayer2Y(newY);
 		}
@@ -232,9 +248,21 @@ public class PlayerController {
 				getGameLayer(), newX, newY);
 		placePlayer(grid, playerClass, false, newX, newY, player);
 
-		if ((playerClass.getUserClass().equals("Runner") && playerClass.getAbility().isActive())) {
-			movePlayer(direction, playerImg, grid, playerClass, player);
+		if ((playerClass.getUserClass().equals("Runner") && playerClass.getAbility().isActive()
+				&& !player.isRunnerMove())) {
+
+			player.setRunnerMove(true);
+
+			PauseTransition delay = new PauseTransition(Duration.seconds(0.1));
+			delay.setOnFinished(event -> {
+				movePlayer(direction, playerImg, grid, playerClass, player);
+				player.setRunnerMove(false);
+			});
+			delay.play();
+
+			return;
 		}
+
 	}
 
 	public Userclass getPlayerClass() {
@@ -331,6 +359,22 @@ public class PlayerController {
 
 	public void setGameLayer(Group gameLayer) {
 		this.gameLayer = gameLayer;
+	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
+	public GridPane getGrid() {
+		return grid;
+	}
+
+	public void setGrid(GridPane grid) {
+		this.grid = grid;
 	}
 
 }

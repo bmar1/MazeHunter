@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -53,7 +54,7 @@ public class IntroController {
 	@FXML
 	private AnchorPane anchorPane;
 	@FXML
-	private AnchorPane highPane;
+	private AnchorPane highPane; 
 	@FXML
 	private AnchorPane playSoloPane;
 	@FXML
@@ -151,12 +152,6 @@ public class IntroController {
 			break;
 		}
 	}
-
-	// Switch to the actual maze, (tutorial will be incl in main screen)
-	private void startGame(MouseEvent event) {
-		GameScreen gameScreen = new GameScreen();
-	}
-
 	public void soloClick(MouseEvent event) {
 		// Remove solo and duo buttons, transition directly to difficulty
 
@@ -291,23 +286,6 @@ public class IntroController {
 		anchorPane.getChildren().add(cont);
 	}
 
-	//!!!
-	private void selectClass(MouseEvent event) { // generate 5 doors to select class
-		playSoloPane.getChildren().clear();
-		anchorPane.getChildren().clear();
-		playDuoPane.getChildren().clear();
-		
-		setState("Class");
-
-		// set new background
-		// include new statue img's of each class, on click set to img id (which is a
-		// class)
-
-		// then start game
-		startGame(event);
-
-	}
-
 	// removes old doors and creates 3 new ones
 	private void transitionDifficulty(MouseEvent event) {
 		setState("Difficulty");
@@ -323,27 +301,73 @@ public class IntroController {
 				setAi(true);
 			else if (clickedDoor.getId() == "human")
 				setHuman(true);
-
 		}
 
 		Text instruct = new Text("Select A Difficulty");
-		configureNode(instruct, 420, 350, 0, 0, null, null);
-		instruct.setFont(loadCustomFont(40)); 
-
+		configureNode(instruct, 450, 750, 0, 0, null, null);
+		instruct.setFont(loadCustomFont(40));
 
 		// Add the instruction text to the scene
 		anchorPane.getChildren().add(instruct);
-		ImageView easy = createDoor("Easy", 0, 0, 150, 200, this::difficultyClick);
+		ImageView easy = createDoor("Easy", 30, 0, 250, 430, this::difficultyClick);
 		easy.setId("Easy");
-		ImageView medium = createDoor("Medium", 150, 0, 150, 200, this::difficultyClick);
+		ImageView medium = createDoor("Medium", 500, 0, 250, 430, this::difficultyClick);
 		medium.setId("Medium");
-		ImageView hard = createDoor("Hard", 0, 0, 150, 200, this::difficultyClick);
+		ImageView hard = createDoor("Hard", 0, 0, 250, 430, this::difficultyClick);
 		hard.setId("Hard");
 
 		// Add new buttons to the scene
 		playSoloPane.getChildren().addAll(easy, medium);
 		playDuoPane.getChildren().add(hard);
 		System.out.println(anchorPane.getChildren());
+	}
+
+	// !!!
+	private void selectClass(MouseEvent event) { // generate 5 doors to select class
+		playSoloPane.getChildren().clear();
+		anchorPane.getChildren().clear();
+		playDuoPane.getChildren().clear();
+		
+		
+
+		setState("Class");
+		
+		highPane.setStyle(
+				"-fx-background-image: url('/images/class_select.png'); -fx-background-size: cover; -fx-background-repeat: no-repeat;");
+
+		Text instruct = new Text("Select A Class");
+		configureNode(instruct, 420, 350, 0, 0, null, null);
+		instruct.setFont(loadCustomFont(40));
+
+		// place all 4 statues (placeholder imgs for now)
+		// each should have an event handler for on hover, as well as on select to
+		// confirm
+		ImageView vis = new ImageView();
+		configureNode(vis, 430, 500, 202, 202, "/images/statue.png", e -> confirmClass(e));
+
+		
+		ImageView run = new ImageView();
+		configureNode(run, 200, 380, 202, 202, "/images/statue.png", e -> confirmClass(e));
+
+		ImageView psy = new ImageView();
+		configureNode(psy, 430, 300, 202, 202, "/images/statue.png", e -> confirmClass(e));
+
+		ImageView nomad = new ImageView();
+		configureNode(nomad, 650, 380, 202, 202, "/images/statue.png", e -> confirmClass(e));
+
+		// set new background
+		// include new statue img's of each class, on click set to img id (which is a
+		// class)
+		
+		anchorPane.getChildren().add(vis);
+		anchorPane.getChildren().add(run);
+		anchorPane.getChildren().add(psy);
+		anchorPane.getChildren().add(nomad);
+
+	}
+
+	private void confirmClass(MouseEvent e) {
+		// confirm selection with small pane, if yes call game otherwise delete itself.
 	}
 
 	private void configureNode(Node node, double x, double y, double width, double height, String imagePath,
@@ -359,6 +383,20 @@ public class IntroController {
 				Image img = new Image(getClass().getResource(imagePath).toExternalForm());
 				imageView.setImage(img);
 			}
+			if (imagePath.contains("statue")) {
+			    imageView.setOnMouseEntered(event -> {
+			        imageView.getStyleClass().add("image-hover-effect");
+
+			        PauseTransition delay = new PauseTransition(Duration.seconds(2));
+			        delay.setOnFinished(e -> displayClassInfo(imageView, imagePath));
+			        delay.play();
+			    });
+			
+				imageView.setOnMouseExited(event -> {
+					imageView.getStyleClass().remove("image-hover-effect");
+					removeClassInfo(imageView);
+				});
+			}
 		} else if (node instanceof TextField textField) {
 			textField.setPrefWidth(width);
 			textField.setPrefHeight(height);
@@ -370,6 +408,18 @@ public class IntroController {
 		if (onClick != null) {
 			node.setOnMouseClicked(onClick);
 		}
+	}
+
+	// remove a custom pane that display's each class's info
+	private void removeClassInfo(ImageView imageView) {
+		
+
+	}
+	
+	//add a custom pane that displays class-specific info on hover of a class
+	private void displayClassInfo(ImageView imageView, String imagePath) {
+		
+
 	}
 
 	private ImageView createDoor(String text, double layoutX, double layoutY, double width, double height,
@@ -388,9 +438,9 @@ public class IntroController {
 		Text display = new Text(text);
 		display.setFont(loadCustomFont(28));
 		if (text == "Medium")
-			display.setLayoutX(layoutX / 10 + 190);
+			display.setLayoutX(layoutX / 10 + 500);
 		else
-			display.setLayoutX(layoutX / 10 + 30);
+			display.setLayoutX(layoutX / 10 + 30); 
 		display.setLayoutY(0);
 		display.setFill(javafx.scene.paint.Color.WHITE);
 		// set color to white
@@ -436,6 +486,11 @@ public class IntroController {
 
 	}
 
+	// Switch to the actual maze, (tutorial will be incl in main screen)
+	private void startGame(MouseEvent event) {
+		GameScreen gameScreen = new GameScreen();
+	}
+	
 	private void fadeIn(Runnable onFinished) {
 		// Fade in the black overlay to cover everything
 		FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), blackOverlay);
