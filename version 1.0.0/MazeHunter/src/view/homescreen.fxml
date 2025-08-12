@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane alignment="CENTER" prefHeight="960.0" prefWidth="980.0" style="-fx-background-image: url('/images/homescreen.png');" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+
+
+
+	<VBox alignment="CENTER" spacing="5">
+	
+	
+	<Text fill="white" style="-fx-font-family: 'Morris Roman'; -fx-font-size: 55;" text="Welcome to MazeHunter!" translateY="-100" wrappingWidth="543.48" StackPane.alignment="TOP_CENTER" />
+
+		<!-- Button 1: StackPane with Image + Text -->
+		<StackPane prefHeight="250" prefWidth="980.0">
+			<ImageView fx:id="signButton1" fitHeight="250" fitWidth="300" onMouseClicked="#selectScreen" onMouseEntered="#mouseHover" onMouseExited="#mouseExit" pickOnBounds="true" preserveRatio="false">
+				<image>
+					<Image url="@/images/sign.png" />
+				</image>
+			</ImageView>
+			<Text fill="white" style="-fx-font-family: 'Morris Roman'; -fx-font-size: 40;" text="Play Game" />
+		</StackPane>
+
+		<!-- Button 2: StackPane with Image + Text -->
+		<StackPane prefHeight="299.0" prefWidth="980.0">
+			<ImageView fx:id="signButton2" fitHeight="250" fitWidth="300" onMouseClicked="#tutorialScreen" onMouseEntered="#mouseHover" onMouseExited="#mouseExit" pickOnBounds="true" preserveRatio="false">
+				<image>
+					<Image url="@/images/sign.png" />
+				</image>
+			</ImageView>
+			<Text fill="white" style="-fx-font-family: 'Morris Roman'; -fx-font-size: 35;" text="Tutorial" />
+		</StackPane>
+
+	</VBox>
+
+</StackPane>
