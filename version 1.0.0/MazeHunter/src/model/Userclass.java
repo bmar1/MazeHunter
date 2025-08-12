@@ -73,7 +73,7 @@ public class Userclass {
 			break;
 
 		case "Psychic":
-			ability.setCooldownTime(d == Difficulty.EASY ? 40 : d == Difficulty.MEDIUM ? 3 : 140);
+			ability.setCooldownTime(d == Difficulty.EASY ? 40 : d == Difficulty.MEDIUM ? 90 : 140);
 			passive.setCooldown(d == Difficulty.EASY ? 50 : d == Difficulty.MEDIUM ? 100 : 160);
 
 			break;
