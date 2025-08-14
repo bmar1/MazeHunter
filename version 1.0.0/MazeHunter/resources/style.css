@@ -38,7 +38,7 @@
 }
 
 .pause-menu {
-    -fx-background-color: rgba(0, 0, 0, 0.75); /* Dark, semi-transparent background */
+    -fx-background-color: rgba(0, 0, 0, 0.75); 
     -fx-padding: 40px;
     -fx-background-radius: 10px;
     -fx-border-color: rgba(255, 255, 255, 0.2);
@@ -46,7 +46,7 @@
     -fx-border-width: 2px;
 }
 
-/* --- Pause Menu Title Style --- */
+
 .pause-menu-title {
     -fx-font-family: 'Morris Roman';
     -fx-font-size: 60px;
@@ -54,7 +54,7 @@
     -fx-text-fill: white;
 }
 
-/* --- Base Style for All Menu Buttons --- */
+
 .menu-button {
     -fx-pref-width: 250px;
     -fx-font-family: 'Morris Roman';
@@ -67,12 +67,20 @@
     -fx-border-radius: 3px;
 }
 
-/* --- Hover Pseudo-class --- */
-/* This style is AUTOMATICALLY applied by JavaFX when the mouse is over the button. */
+
 .menu-button:hover {
-    -fx-background-color: #BFA588; /* Accent color */
+    -fx-background-color: #BFA588;
     -fx-text-fill: black;
     -fx-border-color: white;
-    -fx-cursor: hand; /* Change cursor to a hand pointer */
+    -fx-cursor: hand; 
 }
- 
+.field{
+    -fx-font-family: "Morris Roman Black";
+    -fx-font-size: 16px;
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+    -fx-background-radius: 5;
+    -fx-border-color: #888;
+    -fx-border-radius: 15;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #cccccc;
+}

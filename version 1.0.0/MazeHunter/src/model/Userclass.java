@@ -41,6 +41,7 @@ public class Userclass {
 	private CooldownIcon abilityIcon;
 	private CooldownIcon passiveIcon;
 
+	// Inital constructor call for abilites and class info to set
 	public Userclass(String userClass, Ability ability, Passive passive, Debuff debuff, String classPathImg) {
 		super();
 		this.userClassName = userClass;
@@ -49,22 +50,26 @@ public class Userclass {
 		this.debuff = debuff;
 		this.classPathImg = classPathImg;
 
-
 		setUserClass(userClass);
 	}
 
+	// Seperate constructor to identify other details
 	public Userclass(String className, GameController gameController, PlayerController playerController) {
 		this.userClassName = className;
 		setUserClass(className);
 		this.gameController = gameController;
 		this.playerController = playerController;
-		
+
 		this.abilityIcon = playerController.getAbilityIcon();
 		this.passiveIcon = playerController.getPassiveIcon();
-		
-	
+
 	}
 
+	/**
+	 * Applies a cooldown for an ability and passive depending on the class
+	 * 
+	 * @param Difficulty d, the difficulty set
+	 */
 	public void applyDifficulty(Difficulty d) {
 		switch (userClassName) {
 		case "Nomad":
@@ -73,7 +78,7 @@ public class Userclass {
 			break;
 
 		case "Psychic":
-			ability.setCooldownTime(d == Difficulty.EASY ? 40 : d == Difficulty.MEDIUM ? 90 : 140);
+			ability.setCooldownTime(d == Difficulty.EASY ? 40 : d == Difficulty.MEDIUM ? 3 : 140);
 			passive.setCooldown(d == Difficulty.EASY ? 50 : d == Difficulty.MEDIUM ? 100 : 160);
 
 			break;
@@ -90,6 +95,12 @@ public class Userclass {
 		}
 	}
 
+	/**
+	 * Instanties new abilities with descriptive information, ability use, and
+	 * debuff, depedning on class, which sets cooldowns after
+	 * 
+	 * @param userClassName the class user chose
+	 */
 	public void setUserClass(String userclassName) {
 
 		// get the user class based on the class name, all default values in cd
@@ -127,13 +138,21 @@ public class Userclass {
 		}
 	}
 
+	/**
+	 * Runs the logic for the users passive, depending on class, after a duration
+	 * sets ability cooldown, as well marking it inactive, and playing key ability
+	 * indicators
+	 * 
+	 * @param userClassName the class user chose
+	 * @param playerImg     to edit temporarily
+	 */
 	public void usePassive(Userclass userClass, ImageView playerImg) {
 
 		if (!userClass.getPassive().isOnCooldown()) {
 
 			userClass.getPassive().setLastUsedTime(System.currentTimeMillis());
 			// start cooldown timer if not runner
-			if(!userClass.getUserClass().equals("Runner")) {
+			if (!userClass.getUserClass().equals("Runner")) {
 				passiveIcon.startCooldown(userClass.getPassive().getCooldown());
 			}
 
@@ -143,7 +162,7 @@ public class Userclass {
 				System.out.println("INSIDE ABILITY LOCK PASSIVE");
 				playPassive(false);
 				changeRadius(1);
-				
+
 				PauseTransition pause = new PauseTransition(Duration.seconds(4));
 				pause.setOnFinished(event -> {
 					// increase fog radius temporarily
@@ -190,10 +209,16 @@ public class Userclass {
 
 	}
 
+	/**
+	 * Returns the player to a designated midpoint of a step
+	 * 
+	 * @param stepTrail, the total trail of steps
+	 * @param cellSize
+	 */
 	private void returntoStep(List<ImageView> stepTrail, int cellSize) {
-		// Find which index gonna go back to, probably mid point
+		// Find which index gonna go back to
 		if (stepTrail.size() < 2) {
-			// Not enough steps to go back to, maybe play an error sound.
+			// Not enough steps to go back to, failed
 			return;
 		}
 
@@ -217,6 +242,14 @@ public class Userclass {
 		}
 	}
 
+	/**
+	 * Runs the logic for the users main ability, sets a cooldown after, calling the
+	 * icon to set a specific cooldown, and after a duration removes the ability
+	 * active indicator
+	 * 
+	 * @param userClassName the class user chose
+	 * @param playerImg     to edit temporarily
+	 */
 	public void useAbility(Userclass userClass, ImageView playerImg) {
 
 		if (!userClass.getAbility().isOnCooldown()) {
@@ -224,7 +257,6 @@ public class Userclass {
 			setAbilityCount(getAbilityCount() + 1);
 			userClass.getAbility().setLastUsedTime(System.currentTimeMillis());
 			abilityIcon.startCooldown(userClass.getAbility().getCooldownTime());
-			System.out.println(userClass.getAbility().getCooldownTime() + " cooldown");
 
 			switch (userClass.getUserClass()) {
 
@@ -257,8 +289,6 @@ public class Userclass {
 						changeRadius(-4);
 
 						removeLock(3);
-
-						// play loading noise for 3s until back to full strength
 					});
 					pause.play();
 
@@ -288,9 +318,6 @@ public class Userclass {
 				double abilityDuration = Math.max(minDuration, baseDuration - decayPerUse * abilityCount);
 
 				setActive(abilityDuration, userClass);
-
-				System.out.println(abilityDuration);
-
 				break;
 
 			case "Nomad":
@@ -314,6 +341,10 @@ public class Userclass {
 
 	}
 
+	/**
+	 * Creates a brief indicator of the nearest exit and steps to be taken, given a direction
+	 * @param string dir, direction of ability
+	 */
 	private void createTrail(String dir) {
 
 		Image image = new Image("/images/arrow.png");
@@ -348,13 +379,12 @@ public class Userclass {
 
 	}
 
+	/**
+	 * Casts a beam in a cone shape, creating a beam of light, and a small transition revealing all aspects of fog in the area, 
+	 * as well as minimap, the path of which will be shared.
+	 */
 	private void castBeam() {
 
-		// generate maze in a line per given direction, removing fog of war, then re add
-		// after 5s
-		// drawMazeLine(playerController.getDirection(), playerPos's)
-
-		// this will occur on both mini-map as well as couple of row on screen)
 
 		if (isLightBeamOnCooldown) {
 			return;
@@ -379,10 +409,11 @@ public class Userclass {
 		fadeIn.setOnFinished(e -> {
 			fadeOut.play();
 
-			// A. Show the BIG visual-only beam image first.
 			ImageView beamImage = displayBeamImage();
 
-			// B. Create a short pause for the beam image to be visible.
+	
+			//After the beam dissapears, the expiry time is set, in which the scene is redrawn, 
+			//to reveal the path, from the PlayerController, via gameController and fog class
 			PauseTransition visualBeamDuration = new PauseTransition(Duration.millis(1000)); // 0.4 seconds
 			visualBeamDuration.setOnFinished(event -> {
 				playerController.getRoot().getChildren().remove(beamImage);
@@ -390,14 +421,16 @@ public class Userclass {
 				setBeamActive(true);
 				beamExpiryTime = System.currentTimeMillis() + 4000;
 				this.activeBeamPath = calculateBeamPath();
-				gameController.setBeamPath(activeBeamPath); // This is good
+				gameController.setBeamPath(activeBeamPath); 
 				playerController.redrawScene(playerController.getPlayer1X(), playerController.getPlayer1Y());
 
 				PauseTransition revealTimer = new PauseTransition(Duration.seconds(4));
+				
+				//once finished, set all to false, and tell teh control to no longer reveal
 				revealTimer.setOnFinished(e2 -> {
 					setBeamActive(false);
-					this.activeBeamPath = null; // Clear the data
-					gameController.setBeamPath(null); // Tell the controller
+					this.activeBeamPath = null; 
+					gameController.setBeamPath(null); 
 
 					playerController.redrawScene(playerController.getPlayer1X(), playerController.getPlayer1Y());
 				});
@@ -410,6 +443,10 @@ public class Userclass {
 
 	}
 
+	/**
+	 * Calculates the beam path based on the radius, and a spread factor to reveal 
+	 * a wide area, but as long as the player can see.
+	 */
 	private List<Point2D> calculateBeamPath() {
 		List<Point2D> path = new ArrayList<>();
 		int beamLength = (int) (gameController.getRadius() + 2.5);
@@ -427,8 +464,6 @@ public class Userclass {
 			int sliceCenterX = gridCenterX;
 			int sliceCenterY = gridCenterY;
 
-			// --- FIX: Correct direction logic for the on-screen grid ---
-			// On a screen/canvas, a lower Y value is "Up".
 
 			int spread = (int) (baseSpread + (int) Math.floor((i - 1) / spreadFactor));
 
@@ -436,34 +471,37 @@ public class Userclass {
 				int tileX = sliceCenterX;
 				int tileY = sliceCenterY;
 
+				//Sets the tile x and y to reveal based on grid center position, according to the legnth of spread
 				switch (direction) {
 				case "Up":
-					tileX = gridCenterX + j; // Sideways spread is along X-axis
-					tileY = gridCenterY - i; // Forward movement is along Y-axis
+					tileX = gridCenterX + j; 
+					tileY = gridCenterY - i; 
 					break;
 				case "Down":
-					tileX = gridCenterX + j; // Sideways spread is along X-axis
-					tileY = gridCenterY + i; // Forward movement is along Y-axis
+					tileX = gridCenterX + j; 
+					tileY = gridCenterY + i; 
 					break;
 				case "Left":
-					tileX = gridCenterX - i; // Forward movement is along X-axis
-					tileY = gridCenterY + j; // Sideways spread is along Y-axis
+					tileX = gridCenterX - i; 
+					tileY = gridCenterY + j; 
 					break;
 				case "Right":
-					tileX = gridCenterX + i; // Forward movement is along X-axis
-					tileY = gridCenterY + j; // Sideways spread is along Y-axis
+					tileX = gridCenterX + i;
+					tileY = gridCenterY + j; 
 					break;
 				}
 
-				//if (tileX >= 0 && tileX < visibleTiles && tileY >= 0 && tileY < visibleTiles) {
-					//System.out.println("Beam adds: " + tileX + ", " + tileY);
-					path.add(new Point2D(tileX, tileY));
-				//}
+		
+				path.add(new Point2D(tileX, tileY));
+			
 			}
 		}
 		return path;
 	}
 
+	/**
+	 * Display a beam image.
+	 */
 	private ImageView displayBeamImage() {
 		InputStream stream = getClass().getResourceAsStream("/images/lightbeam.png");
 		if (stream == null) {
@@ -472,20 +510,17 @@ public class Userclass {
 		}
 		ImageView beamImage = new ImageView(new Image(stream));
 
-		// --- Synchronization Logic ---
 		int beamLength = 9;
 		double spreadFactor = 2.0;
-		// Calculate the maximum spread to determine the image's width.
 		int maxSpread = (int) Math.floor((beamLength - 1) / spreadFactor);
 		double beamPixelWidth = (maxSpread * 1.8) * playerController.getCellSize();
 		int beamPixelLength = beamLength * playerController.getCellSize();
-
-		// --- Sizing and Positioning ---
 		int cellSize = playerController.getCellSize();
-		int visibleTiles = gameController.getRadius() * 2 + 1;
+
 
 		beamImage.setPreserveRatio(false);
 
+		//Sets the beam rotation, and length depending on direction
 		switch (playerController.getDirection()) {
 		case "Up":
 			beamImage.setRotate(0);
@@ -573,7 +608,8 @@ public class Userclass {
 	private void changeRadius(int amount) {
 
 		gameController.setRadius(gameController.getRadius() + amount);
-		gameController.getMinimap().update(gameController.getMaze().getGrid(), playerController.getPlayer1X(), playerController.getPlayer1Y(), (gameController.getRadius()/2) + 1, gameController.getRadius());
+		gameController.getMinimap().update(gameController.getMaze().getGrid(), playerController.getPlayer1X(),
+				playerController.getPlayer1Y(), (gameController.getRadius() / 2) + 1, gameController.getRadius());
 		playerController.redrawScene(playerController.getPlayer1X(), playerController.getPlayer1Y());
 
 	}
@@ -630,8 +666,6 @@ public class Userclass {
 		this.beamExpiryTime = beamExpiryTime;
 	}
 
-	
-	
 	public GameController getGameController() {
 		return gameController;
 	}
@@ -643,8 +677,6 @@ public class Userclass {
 	public List<Point2D> getActiveBeamPath() {
 		return activeBeamPath;
 	}
-	
-	
 
 	public CooldownIcon getAbilityIcon() {
 		return abilityIcon;

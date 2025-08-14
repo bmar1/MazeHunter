@@ -1,3 +1,7 @@
+	/**
+	 * Controls all player actions, abilites, movemenets, key and mouse pressing, handles specific ability usage and lockouts to move the player, and control them
+	 */
+
 package controller;
 
 import java.awt.Color;
@@ -33,7 +37,6 @@ import view.*;
 
 public class PlayerController {
 
-	private IntroController introController;
 	private GameController gameController;
 	private GridPane grid;
 
@@ -57,7 +60,7 @@ public class PlayerController {
 	private ImageView playerImage2View;
 
 	private List<ImageView> stepTrail = new ArrayList<>();
-	private int maxTrailLength = 7;
+	private int maxTrailLength;
 	Random random = new Random();
 	private int cellSize;
 	private boolean isPaused = false;
@@ -65,28 +68,42 @@ public class PlayerController {
 	private StackPane root;
 	private Group gameLayer;
 
+	private final double VIEWPORT_SIZE = 820.0;
+	private static final double RATE_LIMIT = 90.0;
+	private static final double ABILITY_ICON_OFFSET_X = 220;
+	private static final double ABILITY_ICON_OFFSET_Y = 90;
+	private static final double PASSIVE_ICON_OFFSET_X = 100;
+	private static final double PASSIVE_ICON_OFFSET_Y = 90;
+	
+
 	public PlayerController(StackPane root, GridPane grid, GameController gameController) {
 
 		this.root = root;
 		this.gameController = gameController;
 		this.grid = grid;
 		init(root, grid);
+		maxTrailLength = gameController.getRadius() + 1;
 		direction = "Right";
 	}
 
-	// on initialization,
+	/**
+	 * Handles initalizing model classes depending on user desired choices, giving
+	 * access to the game state as well, sets difficulty of game cooldowns
+	 * accordingly, and places player Currently only set to load 1 player, but will
+	 * load both depending on introController game state, and use ids for both
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	private void init(Pane root, GridPane grid) {
 
 		player = new Player(gameController.getIntroController().getPlayer1(), this, gameController, 1);
 		// player2 = new Player(introController.getPlayer1(), this, gameController, 2);
-
 		// playerClass = player.getUserClass(introController.getUserClass());
 
 		playerClass = new Userclass(gameController.getIntroController().getUserClass(), gameController, this);
 		setupAbilityIcons();
 
 		// playerClass2 = player.getUserClass(introController.getUserClass()); //change
-		// this to get user class 2
 
 		// change cooldowns of class based on difficulty
 		String diffName = gameController.getIntroController().getDifficulty();
@@ -94,12 +111,10 @@ public class PlayerController {
 		chosenDiff = Difficulty.valueOf(diffName.toUpperCase());
 		playerClass.applyDifficulty(chosenDiff);
 
-		// set the player img on the board
-
+		// Calculate player start state and place
 		int centerX = (int) Math.floor(gameController.getMaze().getSize() / 2.0);
 		int centerY = (int) Math.floor(gameController.getMaze().getSize() / 2.0);
-		setPlayer1X(centerX);
-		setPlayer1Y(centerY);
+		setPlayerPos(centerX, centerY);
 
 		placePlayer(grid, playerClass, false, centerX, centerY, player);
 		// if(introController.isDuoActive() && introController.isHuman())
@@ -107,51 +122,29 @@ public class PlayerController {
 
 	}
 
-	private void setupAbilityIcons() {
-		// 1. Create the Icons
-		String abilityIconPath = "/images/" + playerClass.getUserClass().toLowerCase() + "_ability.png";
-		abilityIcon = new CooldownIcon(abilityIconPath, 80);
-		setAbilityIcon(abilityIcon);
-		playerClass.setAbilityIcon(abilityIcon);
-
-		if (!playerClass.getUserClass().equals("Runner")) {
-			String passiveIconPath = "/images/" + playerClass.getUserClass().toLowerCase() + "_passive.png";
-			passiveIcon = new CooldownIcon(passiveIconPath, 80);
-			setPassiveIcon(passiveIcon);
-			playerClass.setPassiveIcon(passiveIcon);
-		}
-
-		// 2. Add them to the ROOT pane
-		if (abilityIcon != null) {
-			gameController.getHudLayer().getChildren().add(abilityIcon.getView());
-		}
-		if (passiveIcon != null) {
-			gameController.getHudLayer().getChildren().add(passiveIcon.getView());
-		}
-
-		// 3. Use Platform.runLater to guarantee positioning happens AFTER the initial
-		// layout pass.
-
-	}
-
+	/**
+	 * Places the player and their image on the desired position, and updates
+	 * position.
+	 * 
+	 * @param grid,        grid to update on
+	 * @param playerClass, playerClass to access and create new image view
+	 * @param flag,        flag to reference player id, later use
+	 * @param playerMazeX, Y: Players X and Y position
+	 * @param Player       player, the player which is moved
+	 */
 	public void placePlayer(GridPane grid, Userclass playerClass, boolean flag, int playerMazeX, int playerMazeY,
 			Player player) {
 
 		int visibleTiles = gameController.getRadius() * 2 + 1;
-		int cellSize = (int) (820.0 / visibleTiles);
+		int cellSize = (int) (VIEWPORT_SIZE / visibleTiles); // calculate sized based on viewport
 		setCellSize(cellSize);
 
-// Calculate grid position (must match maze drawing logic)
 		int gridCol = playerMazeY - (getPlayer1Y() - gameController.getRadius());
 		int gridRow = playerMazeX - (getPlayer1X() - gameController.getRadius());
 
-// Debug output
-		// centerViewOnPlayer( player, cellSize);
-
-// Create and configure player image
 		ImageView imageView = createPlayerImageView(playerClass, player, cellSize);
 
-// Store reference and add to grid
+		// Set player updation depending on flag (later change via id system)
 		if (!flag) {
 			setPlayerImage1View(imageView);
 			setPlayer1X(playerMazeX);
@@ -163,68 +156,70 @@ public class PlayerController {
 		}
 
 		grid.add(imageView, gridCol, gridRow);
-
 		grid.setFocusTraversable(true);
 		grid.setOnKeyPressed(event -> onKeyPressed(event, imageView, playerClass, grid, player));
 	}
 
+	/**
+	 * Handles player clicks, calls other functions depending on key pressed, will
+	 * later be changed to handle both player ids .
+	 * 
+	 * @param ev,          key event to trace key pressed
+	 * @param playerClass, playerClass to access and create new image view
+	 * @param ImageView,   player Image on screen
+	 * @param grid,        grid to be passed as later use
+	 * @param Player       player, the player which is moved
+	 */
 	private void onKeyPressed(KeyEvent ev, ImageView playerImg, Userclass playerClass, GridPane grid, Player player) {
 
 		// If paused or lock out, dont move
 		if (isPaused || playerClass.isLockout())
 			return;
 
-		// move based on player id, and take action depending on kely
-		if (player.getPlayerID() == 1) {
-			switch (ev.getCode()) {
-			case W:
-				player.setDirection("Up");
-				movePlayer("Up", playerImg, grid, playerClass, player);
-				break;
-			case S:
-				player.setDirection("Down");
-				movePlayer("Down", playerImg, grid, playerClass, player);
-				break;
-			case A:
-				player.setDirection("Left");
-				movePlayer("Left", playerImg, grid, playerClass, player);
-				break;
-			case D:
-				player.setDirection("Right");
-				movePlayer("Right", playerImg, grid, playerClass, player);
-				break;
-			case E:
-				// trigger to use ability
-				playerClass.useAbility(playerClass, playerImg);
-				break;
-			case P:
-				if (!playerClass.getUserClass().equals("Runner")) {
-					playerClass.usePassive(playerClass, playerImg);
-				}
-				break;
-			default:
-				break;
+		// move based on player id, and take action depending on key
+		switch (ev.getCode()) {
+		case W:
+			player.setDirection("Up");
+			movePlayer("Up", playerImg, grid, playerClass, player);
+			break;
+		case S:
+			player.setDirection("Down");
+			movePlayer("Down", playerImg, grid, playerClass, player);
+			break;
+		case A:
+			player.setDirection("Left");
+			movePlayer("Left", playerImg, grid, playerClass, player);
+			break;
+		case D:
+			player.setDirection("Right");
+			movePlayer("Right", playerImg, grid, playerClass, player);
+			break;
+		case E:
+			// trigger to use ability
+			playerClass.useAbility(playerClass, playerImg);
+			break;
+		case P:
+			if (!playerClass.getUserClass().equals("Runner")) {
+				playerClass.usePassive(playerClass, playerImg);
 			}
-		} /*
-			 * else {
-			 * 
-			 * switch (ev.getCode()) { case UP: player.setDirection("Up"); movePlayer("Up",
-			 * playerImg, grid, playerClass, player); break; case DOWN:
-			 * player.setDirection("Down"); movePlayer("Down", playerImg, grid, playerClass,
-			 * player); break; case LEFT: player.setDirection("Left"); movePlayer("Left",
-			 * playerImg, grid, playerClass, player); break; case RIGHT:
-			 * player.setDirection("Right"); movePlayer("Right", playerImg, grid,
-			 * playerClass, player); break; case E: // trigger to use ability
-			 * playerClass.useAbility(playerClass, playerImg); break; case P: if
-			 * (!playerClass.getUserClass().equals("Runner")) {
-			 * playerClass.usePassive(playerClass, playerImg);
-			 * 
-			 * } break; default: break;
-			 * 
-			 * } }
-			 */
+			break;
+		default:
+			break;
+		}
+
 	}
 
+	/**
+	 * Moves the player data, and image in a given direction on the grid, and
+	 * calculates movements, ratelimiting as well as potential abilites in each
+	 * move, and wall collisions
+	 * 
+	 * @param String       direction, the direction the user moves
+	 * @param ImageView,   player Image on screen to move
+	 * @param playerClass, playerClass to access and create new image view
+	 * @param grid,        grid to be passed as later use
+	 * @param Player       player, the player which is moved
+	 */
 	private void movePlayer(String direction, ImageView playerImg, GridPane grid, Userclass playerClass,
 			Player player) {
 
@@ -232,17 +227,15 @@ public class PlayerController {
 			return;
 		}
 
-		// rate limit moving
-		playerClass.setLockout(true);
-		PauseTransition delay = new PauseTransition(Duration.millis(90)); // 0 for testing
-		delay.setOnFinished(e -> playerClass.setLockout(false));
-		delay.play();
+		rateLimitMove(playerClass);
 
+		// Get position based on id
 		int oldX = (player.getPlayerID() == 1) ? getPlayer1X() : getPlayer2X();
 		int oldY = (player.getPlayerID() == 1) ? getPlayer1Y() : getPlayer2Y();
 		int newX = oldX;
 		int newY = oldY;
 
+		// Check if psychic ability is active to pass through walls
 		boolean psyActive = playerClass.getUserClass().equals("Psychic") && playerClass.getAbility().isActive();
 
 		// Calculate proposed new position
@@ -261,82 +254,43 @@ public class PlayerController {
 			break;
 		}
 
+		checkExit(newX, newY);
 		// If the player exits and their repeat counter is less than or 1, theyre
-		// allowed to exit, other repeat the layer
-		if (gameController.getMaze().isExit(newX, newY, gameController.getMaze().getGrid())) {
-			if (gameController.getCounter() <= 1) {
-				showWinScreen();
-			} else {
-				int ctr = gameController.getCounter() - 1;
-				restartGame(ctr);
-				return;
-			}
-		}
+		// allowed to exit, other repeat the maze layer
 
-		// check if cell is walkable or if ability is active to pass through a wall
 		if (!gameController.getMaze().isPath(newX, newY, gameController.getMaze().getGrid()) && !psyActive) {
 			// play noise to indicate collision
 			AudioClip sound = new AudioClip(getClass().getResource("/sounds/wallhit.mp3").toExternalForm());
-			sound.setVolume(200);
+			sound.setVolume(1.0);
 			sound.play();
 			return;
 		}
 
-		// Add class specific steps
+		// Add class specific steps (passive abilites)
 		if (playerClass.getUserClass().equals("Runner") || playerClass.getUserClass().equals("Visionary")) {
 			addStepToTrail(oldX, oldY, player.getDirection());
 		}
 
-		if (player.getPlayerID() == 1) {
-			setPlayer1X(newX);
-			setPlayer1Y(newY);
-		} else {
-			setPlayer2X(newX);
-			setPlayer2Y(newY);
-		}
-
-		// set direction and move player
+		setPlayerPos(newX, newY);
 		setDirection(direction);
 		redrawScene(newX, newY);
 
-		// Play 1 of 2 walking noises
-		int randomNumber = random.nextInt((2 - 1) + 1) + 1;
-		String path;
-		if (playerClass.getUserClass().equals("Runner") || playerClass.getUserClass().equals("Nomad")) {
-			path = "/sounds/bootstep" + randomNumber + ".mp3";
-		} else {
-			path = "/sounds/heelstep_" + randomNumber + ".mp3";
-		}
-
-		URL soundURL = getClass().getResource(path);
-		AudioClip sound = new AudioClip(soundURL.toExternalForm());
-		sound.play();
+		playStepSound();
 
 		// move twice if runner ability active
 		if (playerClass.getUserClass().equals("Runner") && playerClass.getAbility().isActive()
 				&& !playerClass.isRunnerMove()) {
-
-			playerClass.setRunnerMove(true);
-
-			PauseTransition delay2 = new PauseTransition(Duration.seconds(0.10));
-			delay2.setOnFinished(event -> {
-				movePlayer(direction, playerImg, grid, playerClass, player);
-				playerClass.setRunnerMove(false);
-			});
-			delay2.play();
-
-			return;
+			doubleMove(direction, playerImg, grid, playerClass, player);
 		}
 
 	}
 
+	/**
+	 * Plays a transition animation before moving to a win screen, and playing music
+	 */
 	private void showWinScreen() {
 		Stage stage = (Stage) gameController.getRoot().getScene().getWindow();
 		WinScreen winScreen = new WinScreen();
-
-		// Reduce any opacity before
-		gameController.getRoot().setOpacity(0);
-
 		FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.2), gameController.getRoot());
 		fadeIn.setToValue(1);
 		fadeIn.setOnFinished(e -> {
@@ -350,99 +304,71 @@ public class PlayerController {
 			FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.1), gameController.getRoot());
 			fadeOut.setToValue(0);
 			fadeOut.setOnFinished(e2 -> {
-
 				try {
 					winScreen.start(stage);
 				} catch (Exception e1) {
 
 					e1.printStackTrace();
 				}
-
 			});
-
 			fadeOut.play();
 		});
-
 		fadeIn.play(); // Start the fade in
 	}
 
-	private void restartGame(int ctr) {
+	/**
+	 * Restarts the game at the specified maze layer, resetting the grid, HUD, and player position,
+	 * while preserving ability and passive cooldowns.
+	 *
+	 * @param layerNumber the current maze layer to restart
+	 */
+	private void restartGame(int layerNumber) {
 
-		// Calculate remaining time and clear
-		double remainingA = getAbilityIcon().getRemainingCooldownSeconds();
-		double remainingP = getPassiveIcon().getRemainingCooldownSeconds();
-		root.getChildren().clear();
+		double remainingAbilityCooldown = getAbilityIcon() != null ? getAbilityIcon().getRemainingCooldownSeconds() : 0;
+	    double remainingPassiveCooldown = getPassiveIcon() != null ? getPassiveIcon().getRemainingCooldownSeconds() : 0;
 
-		// Reset grid and other elements
-		GridPane grid2 = new GridPane();
-		grid2.setAlignment(Pos.CENTER);
-		grid2.setPrefWidth(980);
-		grid2.setPrefHeight(980);
-		grid2.setHgap(0);
-		grid2.setVgap(0);
-		grid2.setPadding(Insets.EMPTY);
+	    // Clear and reset UI
+	    root.getChildren().clear();
+	    GridPane newGrid = createGameGrid();
+	    Pane hudLayer = new Pane();
+	    root.getChildren().addAll(newGrid, hudLayer);
+	    this.grid = newGrid;
 
-		Pane hudLayer = new Pane();
+	    // Reinitialize GameController and player class
+	    gameController = new GameController(root, newGrid, gameController.getGameScreen(),
+	            gameController.getIntroController(), hudLayer);
+	    setGameController(gameController);
+	    setupAbilityIcons();
+	    playerClass.setGameController(gameController);
 
-		root.getChildren().addAll(grid2, hudLayer);
+	    // Restore ability & passive icons with cooldown
+	    restoreAbilityIcon(remainingAbilityCooldown);
+	    restorePassiveIcon(remainingPassiveCooldown);
 
-		this.grid = grid2;
+	    // Center player in the maze
+	    int center = (int) Math.floor(gameController.getMaze().getSize() / 2.0);
+	    setPlayerPos(center, center);
 
-		gameController = new GameController(root, grid2, gameController.getGameScreen(),
-				gameController.getIntroController(), hudLayer);
-		setGameController(gameController);
-		setupAbilityIcons();
-		playerClass.setGameController(gameController);
+	    // Add transition overlay and layer text
+	    Rectangle blackOverlay = new Rectangle(root.getWidth(), root.getHeight()); 
+	    blackOverlay.setFill(javafx.scene.paint.Color.BLACK); 
+	    blackOverlay.setOpacity(0); 
+	    root.getChildren().addAll(blackOverlay);
+	    Text layerText = new Text("Layer " + layerNumber);
+	    layerText.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/MorrisRoman-Black.ttf"), 55)); 
+	    layerText.setOpacity(0); layerText.setFill(javafx.scene.paint.Color.WHITE);  
+	    layerText.setX(root.getWidth() / 2 - layerText.getBoundsInLocal().getWidth() / 2); 
+	    layerText.setY(root.getHeight() / 2); 
+	    root.getChildren().add(layerText);
+	    
+	    
 
-		// Replace both with new abilites and restart cooldowns if used
-		if (getAbilityIcon() != null) {
-			StackPane view = getAbilityIcon().getView();
 
-			if (remainingA != 0.0 || remainingA != 0) {
-				getAbilityIcon().startCooldown(remainingA);
-			}
-
-			view.toFront();
-			view.setLayoutX(root.getWidth() - view.getWidth() - 220); // from left
-			view.setLayoutY(root.getHeight() - view.getHeight() - 90); // from bottom
-
-		}
-
-		if (getPassiveIcon() != null) {
-			StackPane view = getPassiveIcon().getView();
-
-			if (remainingP != 0.0 || remainingP != 0) {
-				getPassiveIcon().startCooldown(remainingP);
-			}
-			view.setLayoutX(root.getWidth() - view.getWidth() - 100); // from right
-			view.setLayoutY(root.getHeight() - view.getHeight() - 90); // from bottom
-			view.toFront();
-		}
-
-		int center = (int) Math.floor(gameController.getMaze().getSize() / 2.0);
-		setPlayer1X(center);
-		setPlayer1Y(center);
-
-		// Create transition elements
-		Rectangle blackOverlay = new Rectangle(root.getWidth(), root.getHeight());
-		blackOverlay.setFill(javafx.scene.paint.Color.BLACK);
-		blackOverlay.setOpacity(0);
-		root.getChildren().add(blackOverlay);
-		Text layerText = new Text("Layer " + ctr);
-
-		layerText.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/MorrisRoman-Black.ttf"), 55));
-		layerText.setOpacity(0);
-		layerText.setFill(javafx.scene.paint.Color.WHITE);
-
-		// Center the text
-		layerText.setX(root.getWidth() / 2 - layerText.getBoundsInLocal().getWidth() / 2);
-		layerText.setY(root.getHeight() / 2);
-		root.getChildren().add(layerText);
-
-		transition(grid2, blackOverlay, layerText, center, ctr);
+	    // Start transition animation
+	    transition(newGrid, blackOverlay, layerText, center, layerNumber);
 	}
 
-	private void transition(GridPane grid2, Rectangle blackOverlay, Text layerText, int center, int ctr) {
+	private void transition(GridPane grid2, Rectangle blackOverlay, Text layerText, int center, int layerNumber) {
 
 		FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.3), blackOverlay);
 		fadeIn.setToValue(1);
@@ -465,7 +391,7 @@ public class PlayerController {
 							// Clean up and place player
 							root.getChildren().removeAll(blackOverlay, layerText);
 							placePlayer(grid2, playerClass, false, center, center, player);
-							gameController.setCounter(ctr);
+							gameController.setCounter(layerNumber);
 						});
 						fadeOut.play();
 					});
@@ -479,6 +405,11 @@ public class PlayerController {
 
 	}
 
+	/**
+	 * Adds step to list, and removes oldest if the max distance is out of reach
+	 * @param mazeX,mazeY steps positon
+	 * @param direction of step
+	 */
 	private void addStepToTrail(int mazeX, int mazeY, String direction) {
 		int visibleTiles = gameController.getRadius() * 2 + 1;
 		int cellSize = (int) (820.0 / visibleTiles);
@@ -496,6 +427,13 @@ public class PlayerController {
 		}
 	}
 
+	/**
+	 * Restarts the game at the specified maze layer, resetting the grid, HUD, and player position,
+	 * while preserving ability and passive cooldowns.
+	 *
+	 * @param cellSize of step
+	 * @param direction, orentian of step, to use as rotate
+	 */
 	private ImageView createStepImage(int cellSize, String direction) {
 		InputStream stream = getClass()
 				.getResourceAsStream("/images/" + playerClass.getUserClass().toLowerCase() + "_step.png");
@@ -523,6 +461,10 @@ public class PlayerController {
 		return step;
 	}
 
+	/**
+	 * Draws the players passive step onto the grid 
+	 * @param playerCenterX,Y: Players postion to use as reference to draw on gridcol
+	 */
 	private void drawStepTrail(int playerCenterX, int playerCenterY) {
 		int radius = gameController.getRadius();
 		int visibleTiles = radius * 2 + 1;
@@ -543,6 +485,72 @@ public class PlayerController {
 		}
 	}
 
+	//Checks if an exit is valid
+	private void checkExit(int newX, int newY) {
+		if (gameController.getMaze().isExit(newX, newY, gameController.getMaze().getGrid())) {
+			if (gameController.getCounter() == 0) {
+				showWinScreen();
+			} else {
+				int ctr = gameController.getCounter() - 1;
+				restartGame(ctr);
+				return;
+			}
+		}
+
+	}
+
+	private void rateLimitMove(Userclass playerClass) {
+		playerClass.setLockout(true);
+		PauseTransition delay = new PauseTransition(Duration.millis(RATE_LIMIT));
+		delay.setOnFinished(e -> playerClass.setLockout(false));
+		delay.play();
+
+	}
+
+	private void doubleMove(String direction, ImageView playerImg, GridPane grid, Userclass playerClass,
+			Player player) {
+		playerClass.setRunnerMove(true);
+
+		PauseTransition delay2 = new PauseTransition(Duration.seconds(0.10));
+		delay2.setOnFinished(event -> {
+			movePlayer(direction, playerImg, grid, playerClass, player);
+			playerClass.setRunnerMove(false);
+		});
+		delay2.play();
+
+		return;
+
+	}
+
+	private void playStepSound() {
+		// Play 1 of 2 walking noises
+		int randomNumber = random.nextInt((2 - 1) + 1) + 1;
+		String path;
+		if (playerClass.getUserClass().equals("Runner") || playerClass.getUserClass().equals("Nomad")) {
+			path = "/sounds/bootstep" + randomNumber + ".mp3";
+		} else {
+			path = "/sounds/heelstep_" + randomNumber + ".mp3";
+		}
+
+		URL soundURL = getClass().getResource(path);
+		AudioClip sound = new AudioClip(soundURL.toExternalForm());
+		sound.play();
+
+	}
+
+	private void setPlayerPos(int newX, int newY) {
+		if (player.getPlayerID() == 1) {
+			setPlayer1X(newX);
+			setPlayer1Y(newY);
+		} else {
+			setPlayer2X(newX);
+			setPlayer2Y(newY);
+		}
+
+	}
+
+	//Create the player image view, rotate it based on 
+	//direction and opacity if psychic ability active to indciate
 	private ImageView createPlayerImageView(Userclass playerClass, Player player, int cellSize) {
 		InputStream stream = getClass().getResourceAsStream(playerClass.getClassPathImg());
 		ImageView imageView = new ImageView(new Image(stream));
@@ -605,6 +613,33 @@ public class PlayerController {
 		placePlayer(grid, playerClass, false, playerNewX, playerNewY, player);
 	}
 
+	/**
+	 * Creates players ability icon depending on their desired user class, and adds
+	 * them
+	 */
+	private void setupAbilityIcons() {
+
+		String abilityIconPath = "/images/" + playerClass.getUserClass().toLowerCase() + "_ability.png";
+		abilityIcon = new CooldownIcon(abilityIconPath, 80);
+		setAbilityIcon(abilityIcon);
+		playerClass.setAbilityIcon(abilityIcon);
+
+		if (!playerClass.getUserClass().equals("Runner")) {
+			String passiveIconPath = "/images/" + playerClass.getUserClass().toLowerCase() + "_passive.png";
+			passiveIcon = new CooldownIcon(passiveIconPath, 80);
+			setPassiveIcon(passiveIcon);
+			playerClass.setPassiveIcon(passiveIcon);
+		}
+
+		// 2. Add them to the ROOT pane
+		if (abilityIcon != null) {
+			gameController.getHudLayer().getChildren().add(abilityIcon.getView());
+		}
+		if (passiveIcon != null) {
+			gameController.getHudLayer().getChildren().add(passiveIcon.getView());
+		}
+	}
+
 	private void drawMazeTiles(int playerCenterX, int playerCenterY) {
 
 		if (playerClass.isBeamActive()) {
@@ -616,6 +651,42 @@ public class PlayerController {
 
 		gameController.drawMaze(grid, gameController.getMaze().getSize(), gameController.getMaze().getGrid(),
 				playerCenterX, playerCenterY);
+	}
+
+	private GridPane createGameGrid() {
+		GridPane gridPane = new GridPane();
+		gridPane.setAlignment(Pos.CENTER);
+		gridPane.setPrefWidth(980);
+		gridPane.setPrefHeight(980);
+		gridPane.setHgap(0);
+		gridPane.setVgap(0);
+		gridPane.setPadding(Insets.EMPTY);
+		return gridPane;
+	}
+	
+	private void restoreAbilityIcon(double remainingCooldown) {
+	    if (getAbilityIcon() != null) {
+	        StackPane view = getAbilityIcon().getView();
+	        if (remainingCooldown > 0) {
+	            getAbilityIcon().startCooldown(remainingCooldown);
+	        }
+	        view.toFront();
+	        view.setLayoutX(root.getWidth() - view.getWidth() - ABILITY_ICON_OFFSET_X);
+	        view.setLayoutY(root.getHeight() - view.getHeight() - ABILITY_ICON_OFFSET_Y);
+	    }
+	}
+
+	/** Restores passive icon and restarts cooldown if needed. */
+	private void restorePassiveIcon(double remainingCooldown) {
+	    if (getPassiveIcon() != null) {
+	        StackPane view = getPassiveIcon().getView();
+	        if (remainingCooldown > 0) {
+	            getPassiveIcon().startCooldown(remainingCooldown);
+	        }
+	        view.toFront();
+	        view.setLayoutX(root.getWidth() - view.getWidth() - PASSIVE_ICON_OFFSET_X);
+	        view.setLayoutY(root.getHeight() - view.getHeight() - PASSIVE_ICON_OFFSET_Y);
+	    }
 	}
 
 	public Userclass getPlayerClass() {

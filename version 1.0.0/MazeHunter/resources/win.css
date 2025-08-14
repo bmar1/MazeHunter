@@ -1,60 +1,52 @@
 .root {
-    -fx-background-color: #1a1a1a; /* Dark background */
+    -fx-background-color: #1a1a1a; 
     -fx-font-family: 'Verdana';
 }
 
-/* --- Title Style --- */
+
 .title-label {
     -fx-font-family: 'Morris Roman';
     -fx-font-size: 40px;
-    -fx-text-fill: #e0e0e0; /* Light grey text */
+    -fx-text-fill: #e0e0e0; 
     -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 5, 0, 0, 1);
 }
 
-/* --- Stepper Button Styles --- */
 .step-button {
 	-fx-font-size: 15px; 
 	   -fx-font-weight: bold;
-	   -fx-text-fill: #e0e0e0; /* Use a light grey for better blending */
+	   -fx-text-fill: #e0e0e0; 
 	   -fx-background-color: #444444;
 	   -fx-border-color: #666666;
 	   -fx-border-width: 2px;
-	   
-	   /* --- THIS IS THE FIX --- */
-	   /* Make the button larger to fit the text */
+	  
 	   -fx-min-width: 40px;
 	   -fx-min-height:40px;
 	   -fx-max-width: 40px;
 	   -fx-max-height: 40px;
 
-	   /* Make the button a perfect circle by setting radius to half the size */
 	   -fx-background-radius: 25px; 
 	   -fx-border-radius: 25px;
-	   
-	   /* This ensures the text is perfectly centered inside the larger circle */
 	   -fx-alignment: center;
 }
 
-/* Style for when hovering over a button */
+
 .step-button:hover {
     -fx-background-color: #555555;
     -fx-cursor: hand;
 }
 
-/* Style for the currently selected/active button */
 .step-button-active {
-    -fx-background-color: #BFA588; /* A sandy accent color */
+    -fx-background-color: #BFA588; 
     -fx-text-fill: #1a1a1a;
     -fx-border-color: #ffffff;
 }
 
-/* --- Stepper Connecting Line Style --- */
 .step-line {
     -fx-stroke: #666666;
     -fx-stroke-width: 2px;
 }
 
-/* --- Description Text Area Style --- */
+
 .description-area {
     -fx-font-family: 'Morris Roman';
     -fx-font-size: 25px;
@@ -62,12 +54,10 @@
     -fx-border-width: 2px;
     -fx-border-radius: 5px;
     
-    /* Make the scrollbar look better */
     -fx-background-insets: 0;
     -fx-padding: 10px;
 }
 
-/* Styling the content view of the text area */
 .description-area .content {
     -fx-background-color: transparent;
 }

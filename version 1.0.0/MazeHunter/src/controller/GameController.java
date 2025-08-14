@@ -1,6 +1,4 @@
-/* This class is supposed to control the main logic of the game (fog, maze gen), kinda act as the recipient to all main actions (like moving
- * and will act accordingly, probably will be one big class, or to make it smaller can feed information to the next controller (player controller)
- * which will take action there upon recieving a request
+/* This class is supposed to control the main logic of the game, controlling everything in the game state besides the player.
  */
 
 package controller;
@@ -65,6 +63,7 @@ public class GameController {
 	private GameScreen gameScreen;
 	private NavController navController = new NavController();
 	
+	//Constants for sizing
 	private final double VIEWPORT_SIZE = 820.0;
 	private final double SCREEN_SIZE = 980.0;
 
@@ -77,6 +76,7 @@ public class GameController {
 		this.hudLayer = hudLayer;
 		initialize(root, grid);
 
+		//
 		Platform.runLater(() -> {
 			Scene scene = root.getScene();
 			if (scene != null) {
@@ -91,15 +91,12 @@ public class GameController {
 
 	}
 
+	
 	/**
-	 * Draws the visible portion of the maze centered on the player, updates fog of
-	 * war, minimap, and HUD.
-	 *
+	 * Initalizes the game state by getting key variables such as the maze, 
+	 * counter of repeat based on intro settings.
+	 * @param root     root stackpane to provide drawMaze
 	 * @param grid     GridPane to draw on.
-	 * @param mazeSize Size of the maze (width = height = mazeSize).
-	 * @param mazeGrid 2D array of maze cell types.
-	 * @param centerX  Player's X position in maze coordinates.
-	 * @param centerY  Player's Y position in maze coordinates.
 	 */
 	private void initialize(Pane root, GridPane grid) {
 		// Create maze based on difficulty
@@ -144,7 +141,16 @@ public class GameController {
 
 	
 
-	// Generates maze on screen given maze co-ords
+	/**
+	 * Draws the visible portion of the maze centered on the player, updates fog of
+	 * war, minimap, and HUD.
+	 *
+	 * @param grid     GridPane to draw on.
+	 * @param mazeSize Size of the maze (width = height = mazeSize).
+	 * @param mazeGrid 2D array of maze cell types.
+	 * @param centerX  Player's X position in maze coordinates.
+	 * @param centerY  Player's Y position in maze coordinates.
+	 */
 	public void drawMaze(GridPane grid, int mazeSize, int[][] mazeGrid, int playerX, int playerY) {
 
 		grid.getColumnConstraints().clear();
@@ -203,6 +209,17 @@ public class GameController {
 
 	}
 
+
+	
+	/**
+	 * Updates the game systems and overall HUD with players new position/ability usage
+	 *
+	 * @param cellSize     size of each cell to pass to fog
+	 * @param playerX  Player's X position in maze coordinates.
+	 * @param playerY  Player's Y position in maze coordinates.
+	 * @param mazeGrid 2D array of maze cell types.
+	 
+	 */
 	private void updateHUD(int cellSize, int playerX, int playerY, int[][] mazeGrid) {
 
 		if (fog == null || fog.getFogCanvas() == null || !root.getChildren().contains(fog.getFogCanvas())) {
@@ -253,6 +270,7 @@ public class GameController {
 				}
 
 			}
+			//Set the hud on the top most layer to not be blurred out
 			hudLayer.toFront();
 
 		});
@@ -330,11 +348,11 @@ public class GameController {
 		pauseMenu.getStyleClass().add("pause-menu");
 		pauseMenu.setMaxSize(SCREEN_SIZE, SCREEN_SIZE);
 
-		// 2. Create the title and apply its style class
+	
 		Label title = new Label("Paused");
 		title.getStyleClass().add("pause-menu-title");
 
-		// 3. Create the buttons and apply their style class
+	
 		Button resumeButton = new Button("Resume Game");
 		Button homeButton = new Button("Return to Home Screen");
 		Button quitButton = new Button("Quit Game");
@@ -344,13 +362,13 @@ public class GameController {
 		homeButton.getStyleClass().add("menu-button");
 		quitButton.getStyleClass().add("menu-button");
 
-		// 4. Set button actions
+
 		resumeButton.setOnAction(e -> togglePauseMenu());
 
 		homeButton.setOnAction(event -> {
 			if (navController != null) {
 
-				// We create a "synthetic" event source for the method.
+				//on action, use nav to return home
 				navController.setPlayer(gameScreen.getPlayer());
 				Node eventSource = (Node) event.getSource();
 
@@ -362,7 +380,6 @@ public class GameController {
 
 		quitButton.setOnAction(e -> Platform.exit());
 
-		// 5. Add all elements to the VBox
 		pauseMenu.getChildren().addAll(title, resumeButton, homeButton, quitButton);
 
 		// Add effects
@@ -375,6 +392,9 @@ public class GameController {
 
 	}
 
+	/*
+	 * Getters and setters
+	 */
 	public int getRadius() {
 		return radius;
 	}

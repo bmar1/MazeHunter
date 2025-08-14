@@ -1,3 +1,8 @@
+/*
+ * This is the model class that runs the heart of the game, it generates the maze using 
+ * recursive backtracking to carve out paths, dynamically placing exits based on size.
+ */
+
 package model;
 
 import java.util.ArrayList;
@@ -9,10 +14,10 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Maze {
-	private int[][] grid; // -1 for boundary walls, 0 for normal walls, 1 for paths
-	private int size; // Size of the maze (must be odd for proper generation)
-	private int maxExits; // Maximum number of exits allowed
-	private Random rand; // Random number generator
+	private int[][] grid;
+	private int size;
+	private int maxExits;
+	private Random rand;
 	private Fog fog;
 
 	public Maze(int size) {
@@ -20,16 +25,16 @@ public class Maze {
 		this.grid = new int[size][size];
 		this.rand = new Random();
 		this.maxExits = calculateMaxExits(size);
-		initializeGrid(); // Initialize the grid with walls
+		initializeGrid();
 		carvePath(1, 1); // Start carving from (1, 1)
-		placeExits(); // Place exits in the maze
+		placeExits();
 	}
 
 	// Calculate the maximum number of exits based on size
 	private int calculateMaxExits(int size) {
 		if (size <= 5)
 			return 1;
-		return Math.round(size / 13); // One exit for every 10 units of size
+		return Math.round(size / 13);
 	}
 
 	// Initialize the grid
@@ -37,15 +42,15 @@ public class Maze {
 		// Set all cells to walls
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				grid[i][j] = 0; // All cells as normal walls (0)
+				grid[i][j] = 0;
 			}
 		}
-		// Set the outer walls
+
 		for (int i = 0; i < size; i++) {
-			grid[0][i] = -1; // Top wall
-			grid[size - 1][i] = -1; // Bottom wall
-			grid[i][0] = -1; // Left wall
-			grid[i][size - 1] = -1; // Right wall
+			grid[0][i] = -1;
+			grid[size - 1][i] = -1;
+			grid[i][0] = -1;
+			grid[i][size - 1] = -1;
 		}
 	}
 
@@ -55,22 +60,20 @@ public class Maze {
 
 		// Define possible directions (right, down, left, up)
 		int[][] directions = { { 0, 2 }, { 2, 0 }, { 0, -2 }, { -2, 0 } }; // Move in two steps
-		shuffle(directions); // Shuffle to randomize path generation
+		shuffle(directions); 
 
 		for (int[] dir : directions) {
-			int nx = x + dir[0]; // New x position
-			int ny = y + dir[1]; // New y position
+			int nx = x + dir[0]; 
+			int ny = y + dir[1];
 
-			// Check if the new position is within bounds and is a wall
 			if (nx > 0 && ny > 0 && nx < size - 1 && ny < size - 1 && grid[nx][ny] == 0) {
 				// Remove the wall between the current cell and the new cell
-				grid[x + dir[0] / 2][y + dir[1] / 2] = 1; // Carve path
+				grid[x + dir[0] / 2][y + dir[1] / 2] = 1; 
 				carvePath(nx, ny); // Recursively carve the path
 			}
 		}
 	}
 
-	// Shuffle directions to randomize movement
 	private void shuffle(int[][] array) {
 		Random rand = new Random();
 		for (int i = array.length - 1; i > 0; i--) {
@@ -90,16 +93,16 @@ public class Maze {
 			int side = rand.nextInt(4);
 			int pos = rand.nextInt(size - 2) + 1;
 
-			if (side == 0 && grid[1][pos] != 0 && grid[0][pos] == -1) { // Top side
+			if (side == 0 && grid[1][pos] != 0 && grid[0][pos] == -1) { 
 				grid[0][pos] = -2; // Mark exit
 				exitCount++;
-			} else if (side == 1 && grid[pos][size - 1] == -1 && grid[pos][size - 1] - 1 != 0) { // Right side
+			} else if (side == 1 && grid[pos][size - 1] == -1 && grid[pos][size - 1] - 1 != 0) { 
 				grid[pos][size - 1] = -2; // turn into exit
 				exitCount++;
-			} else if (side == 2 && grid[size - 1][pos] == -1 && grid[size - 2][pos] != 0) { // Bottom side
+			} else if (side == 2 && grid[size - 1][pos] == -1 && grid[size - 2][pos] != 0) { 
 				grid[size - 1][pos] = -2;
 				exitCount++;
-			} else if (side == 3 && grid[pos][0] == -1 && grid[pos][0] - 1 != 0) { // Left side
+			} else if (side == 3 && grid[pos][0] == -1 && grid[pos][0] - 1 != 0) { 
 				grid[pos][0] = -2;
 			}
 		}
@@ -119,33 +122,31 @@ public class Maze {
 					System.out.print(". "); // Paths as spaces
 				}
 			}
-			System.out.println(); // Print new line after each row
 		}
 	}
 
-	public static void main(String[] args) {
-		int mazeSize = 31; // Set the maze size (must be odd)
-		Maze maze = new Maze(mazeSize); // Create a new Maze object
-		maze.displayMaze(); // Display the generated maze
-	}
 
 	public int[][] getGrid() {
 		return grid;
 	}
 
 	public boolean isPath(int x, int y, int[][] grid) {
-	    if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
-	        return false;
-	    }
-	    return grid[x][y] == 1; // Only returns true for actual paths (1)
+		if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
+			return false;
+		}
+		return grid[x][y] == 1; // Only returns true for actual paths (1)
 	}
 
 	public boolean isExit(int x, int y, int[][] grid) {
-
 		return grid[x][y] == -2;
 
 	}
 
+	/*
+	 * Returns the string of a direction you must step in to find the nearest exit in the game
+	 * @param grid, grid used to calculate
+	 * @param startx, y positions to start at
+	 */
 	public String nearestExit(int[][] grid, int startX, int startY) {
 		int n = grid.length;
 		boolean[][] visited = new boolean[n][n];
@@ -161,12 +162,14 @@ public class Maze {
 			int newX = startX + directions[i][0];
 			int newY = startY + directions[i][1];
 
+			// if the first move is valid, add it to our visited areas
 			if (isValid(newX, newY, grid, visited)) {
 				queue.add(new Node(newX, newY, dirNames[i]));
 				visited[newX][newY] = true;
 			}
 		}
 
+		// until the queue is empty (of all movements, continue)
 		while (!queue.isEmpty()) {
 			Node current = queue.poll();
 
@@ -193,7 +196,6 @@ public class Maze {
 		return x >= 0 && y >= 0 && x < n && y < n && (grid[x][y] == 1 || grid[x][y] == -2) && !visited[x][y];
 	}
 
-	// Helper class to track position and direction
 	private class Node {
 		int x, y;
 		String initialDirection;
@@ -206,82 +208,75 @@ public class Maze {
 	}
 
 	public boolean isDeadEnd(int x, int y, int[][] grid, int skipDirIndex) {
-	    int n = grid.length;
-	    // Directions: 0=RIGHT, 1=DOWN, 2=LEFT, 3=UP
-	    int[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+		int n = grid.length;
 
-	   
-	    int forwardExitCount = 0;
-	    int[] singlePathStart = null; 
+		int[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
-	    
-	    for (int i = 0; i < 4; i++) {
-	        // Skip the direction the player came from.
-	        if (i == skipDirIndex) {
-	            continue;
-	        }
+		int forwardExitCount = 0;
+		int[] singlePathStart = null;
 
-	        int nx = x + directions[i][0];
-	        int ny = y + directions[i][1];
+		for (int i = 0; i < 4; i++) {
+			// Skip the direction the player came from.
+			if (i == skipDirIndex) {
+				continue;
+			}
 
-	        if (isPath(nx, ny, grid)) {
-	            forwardExitCount++;
-	            singlePathStart = new int[]{nx, ny};
-	        }
-	    }
+			int nx = x + directions[i][0];
+			int ny = y + directions[i][1];
 
-	  
-	   if (forwardExitCount == 0) {
-	        return true;
-	    }
+			if (isPath(nx, ny, grid)) {
+				forwardExitCount++;
+				singlePathStart = new int[] { nx, ny };
+			}
+		}
 
-	    if (forwardExitCount > 1) {
-	        return false;
-	    }
-	    
-	    Stack<int[]> stack = new Stack<>(); // lifo
-	    boolean[][] visited = new boolean[grid.length][grid.length];
+		if (forwardExitCount == 0) {
+			return true;
+		}
 
-	    visited[x][y] = true;
-	    visited[singlePathStart[0]][singlePathStart[1]] = true;
-	    stack.push(singlePathStart); // Push the start of the path onto the stack.
+		if (forwardExitCount > 1) {
+			return false;
+		}
 
-	    while (!stack.isEmpty()) {
-	        int[] current = stack.pop(); // Take the most recent path addition.
-	        int cx = current[0];
-	        int cy = current[1];
+		Stack<int[]> stack = new Stack<>(); // lifo
+		boolean[][] visited = new boolean[grid.length][grid.length];
 
-	        // Find ALL unvisited neighbors from this point.
-	        List<int[]> unvisitedNeighbors = new ArrayList<>();
-	        for (int i = 0; i < 4; i++) {
-	            int nx = cx + directions[i][0];
-	            int ny = cy + directions[i][1];
-	            if (isPath(nx, ny, grid) && !visited[nx][ny]) {
-	                unvisitedNeighbors.add(new int[]{nx, ny});
-	            }
-	        }
-	        
-	        
-	        if (unvisitedNeighbors.size() > 1) {
-	            return false;
-	        }
+		visited[x][y] = true;
+		visited[singlePathStart[0]][singlePathStart[1]] = true;
+		stack.push(singlePathStart); // Push the start of the path onto the stack.
 
-	        // Add the next part of the path to the stack to continue the walk.
-	        for (int[] neighbor : unvisitedNeighbors) {
-	            visited[neighbor[0]][neighbor[1]] = true;
-	            stack.push(neighbor);
-	        }
-	    }
-	    
-	    // If the entire search completes without finding a junction with >1 exit,
-	    // the path IS a dead end.
-	    return true;
+		while (!stack.isEmpty()) {
+			int[] current = stack.pop(); 
+			int cx = current[0];
+			int cy = current[1];
+
+			// Find ALL unvisited neighbors from this point.
+			List<int[]> unvisitedNeighbors = new ArrayList<>();
+			for (int i = 0; i < 4; i++) {
+				int nx = cx + directions[i][0];
+				int ny = cy + directions[i][1];
+				if (isPath(nx, ny, grid) && !visited[nx][ny]) {
+					unvisitedNeighbors.add(new int[] { nx, ny });
+				}
+			}
+
+			if (unvisitedNeighbors.size() > 1) {
+				return false;
+			}
+
+			// Add the next part of the path to the stack to continue the walk.
+			for (int[] neighbor : unvisitedNeighbors) {
+				visited[neighbor[0]][neighbor[1]] = true;
+				stack.push(neighbor);
+			}
+		}
+
+		return true;
 	}
 
 	public int getDistance(int x1, int y1, int x2, int y2) {
-	    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 	}
-	
 
 	public void setGrid(int[][] grid) {
 		this.grid = grid;

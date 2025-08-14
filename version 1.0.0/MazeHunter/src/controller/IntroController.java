@@ -21,6 +21,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,21 +39,20 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /*
- * This class updates all visual or value updates in the introScreen NOTE TO SELF, 
- * ADD A STATE FOR AFTER CHOOSING TO PLAY WITH HUMAN TO DO LOCAL OR ACROSS INTERNET.
+ * This class updates all visual or value updates in the introScreen, the users selections will impact the game state later on.
+ * 
  */
 
 public class IntroController {
 
+	// Info to pass on
 	private boolean soloActive = false;
 	private boolean duoActive = false;
 	private boolean ai = false;
 	private boolean human = false;
 	private String difficulty;
 	private String userClass;
-	private String state; // track state of progress, i.e start for choosing, or chooseAiHuman (which
-							// returns to start) difficulty returns to start
-	// lastly nameState returns to difficulty
+	private String state;
 
 	private String player1;
 	private String player2;
@@ -59,7 +60,7 @@ public class IntroController {
 	private Image closedDoor;
 	private Image openDoor;
 
-	// Panes
+	// Panes and assets from screen
 	@FXML
 	private AnchorPane anchorPane;
 	@FXML
@@ -68,7 +69,6 @@ public class IntroController {
 	private AnchorPane playSoloPane;
 	@FXML
 	private AnchorPane playDuoPane;
-	// Images, refrenced from FXML document
 	@FXML
 	private ImageView playSoloImage;
 	@FXML
@@ -96,96 +96,28 @@ public class IntroController {
 		blackOverlay.setOpacity(0);
 	}
 
-	// this method will use a switch statement to determine the state, then call the
-	// appropriate method to switch to that state
-	// so if we're at names, it'll go back to difficulty, delete the stuff of names
+	/**
+	 * Handles which state to back on depending on state
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	public void back(MouseEvent event) {
+		String currentState = getState();
 
-		System.out.println("Current State: " + getState());
+		switch (currentState) {
+		case "Difficulty" -> handleDifficultyBack();
+		case "chooseAiHuman" -> handleChooseAiHumanBack(event);
+		case "Name" -> handleNameBack(event);
 
-		switch (getState()) {
-		case "Difficulty":
-			// Change as this only works for playing alone, but for playing duo,
-			// difficulty should return to chooseAiHuman. Add another case or an if
-			fadeIn(() -> {
-				// If duo is active, go back to AI-human selection
-				if (isDuoActive()) {
-					for (Iterator<Node> iterator = anchorPane.getChildren().iterator(); iterator.hasNext();) {
-						Node node = iterator.next();
-						if (!"playSoloPane".equals(node.getId()) && !"playDuoPane".equals(node.getId())
-								&& !"welcome".equals(node.getId())) {
-							iterator.remove(); // Remove node if it doesn't match any of the specified IDs
-						}
-					}
-					setSoloActive(false);
-					setDuoActive(false);
-					playSoloPane.getChildren().clear();
-					playDuoPane.getChildren().clear();
-					setState("chooseAiHuman");
-					transitionAiHuman();
-
-				} else if (isSoloActive()) {
-					// If solo is active, return just to the start
-					anchorPane.getChildren().clear();
-					returnStart();
-					setSoloActive(false);
-					setState("Start");
-				}
-				fadeOut();
-			});
-			break;
-
-		case "chooseAiHuman":
-			fadeIn(() -> {
-				anchorPane.getChildren().clear();
-				returnStart();
-				setState("Start");
-				setDuoActive(false);
-				fadeOut();
-			});
-			break;
-
-		case "Name": // two different returns depending on duo or not or remove more depednig on ai
-			fadeIn(() -> {
-				System.out.println(anchorPane.getChildren());
-				if (isSoloActive())
-					anchorPane.getChildren().remove(3);
-				else if (isDuoActive())
-					anchorPane.getChildren().remove(4);
-				anchorPane.getChildren().removeIf(node -> node.getId() != null
-						&& ((isSoloActive() || isAi()) && "NamePane1".equals(node.getId()))
-						|| (isDuoActive() && ("NamePane1".equals(node.getId()) || "NamePane2".equals(node.getId()))));
-
-				transitionDifficulty(event);
-
-				fadeOut();
-			});
-			break;
 		}
 	}
 
-	public void soloClick(MouseEvent event) {
-		// Remove solo and duo buttons, transition directly to difficulty
-
-		setSoloActive(true);
-
-		fadeIn(() -> {
-			clickNoise();
-			transitionDifficulty(event);
-
-			ImageView back = new ImageView();
-			back.setId("back");
-			configureNode(back, 30, 700, 140, 90, "/images/back.png", e -> back(event));
-
-			anchorPane.getChildren().add(back);
-
-			fadeOut();
-		});
-
-	}
-
-	// transition to asking if they wanna play with ai or human, then call a method
-	// for difficulty
+	/**
+	 * Handles updation of elements to query user choice on how they would queue
+	 * duo.
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	public void duoClick(MouseEvent event) {
 
 		setDuoActive(true);
@@ -203,10 +135,13 @@ public class IntroController {
 		});
 	}
 
+	/**
+	 * Updates screen with elements to handle two inputs of ai or human
+	 */
 	private void transitionAiHuman() {
-		// add two doors to determine if wanna play with or human
 		setState("chooseAiHuman");
 		Text instruct = new Text("Choose to play with Human or AI");
+		instruct.setId("instruct");
 		configureNode(instruct, 340, 350, 0, 0, null, null);
 		instruct.setFont(loadCustomFont(36));
 
@@ -224,6 +159,11 @@ public class IntroController {
 
 	}
 
+	/**
+	 * Sets difficulty depending on door clicked, then moves to next state
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	public void difficultyClick(MouseEvent e) {
 
 		clickNoise();
@@ -260,59 +200,61 @@ public class IntroController {
 		});
 	}
 
+	/**
+	 * Transition elements to accept user name, adds name entries, clears prevuiys
+	 * elements
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	public void transitionName(MouseEvent event) {
 		setState("Name");
 
 		ImageView clickedDoor = (ImageView) event.getSource();
-		if (clickedDoor.getId() == "AI")
+		if ("AI".equals(clickedDoor.getId()))
 			setAi(true);
-		else if (clickedDoor.getId() == "Human")
+		else if ("Human".equals(clickedDoor.getId()))
 			setHuman(true);
 		// delete all existing doors, (which are difficulty doors)
 		// remove the panes to hold it and place the text fields on the anchorPane
 		playSoloPane.getChildren().clear();
-
 		playDuoPane.getChildren().clear();
-		// anchorPane.getChildren().removeAll(playSoloPane, playDuoPane);
-		Text instruct;
-		if (isSoloActive())
-			instruct = (Text) anchorPane.getChildren().get(3);
 
-		else
-			instruct = (Text) anchorPane.getChildren().get(4);
+		Node instruct = anchorPane.lookup("#instruct");
 
-		instruct.setText("Enter name(s)");
+		if (instruct instanceof Text) {
+		    ((Text) instruct).setText("Enter name(s)");
+		}
 		TextField textField1 = new TextField("Enter Player 1 Name...");
 		textField1.setId("NamePane1");
 		TextField textField2 = new TextField("Enter Player 2 Name...");
 		textField2.setId("NamePane2");
 
 		ImageView back = createDoor("Back", 0, 0, 250, 430, this::back);
+		ImageView cont = createDoor("Continue", 0, 10, 250, 430, this::selectClass); // Moves to next class
 
-		ImageView cont = createDoor("Continue", 0, 10, 250, 430, this::selectClass);
-
-		textField1.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); " + "-fx-text-fill: white; "
-				+ "-fx-font-size: 16px; " + "-fx-prompt-text-fill: #cccccc; " + "-fx-border-color: #888; "
-				+ "-fx-border-radius: 15; " + "-fx-bakground-radius: 5;" + "-fx-font-family: 'Morris Roman Black'");
-
-		textField2.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); " + "-fx-text-fill: white; "
-				+ "-fx-font-size: 16px; " + "-fx-prompt-text-fill: #cccccc; " + "-fx-border-color: #888; "
-				+ "-fx-border-radius: 15; " + "-fx-bakground-radius: 5;" + " \"-fx-font-family: 'Morris Roman Black'");
+		textField1.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+		textField2.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+		textField1.getStyleClass().add("field");
+		textField2.getStyleClass().add("field");
 
 		configureNode(textField1, 340, 400, 450, 30, null, null);
 		configureNode(textField2, 340, 500, 450, 30, null, null);
 		if (isDuoActive() && isAi() == false) {
-			anchorPane.getChildren().add(textField1);
-			anchorPane.getChildren().add(textField2);
+			anchorPane.getChildren().addAll(textField1, textField2);
 		} else if (!isDuoActive() || isAi())
 			anchorPane.getChildren().add(textField1);
 
 		playSoloPane.getChildren().add(back);
 		playDuoPane.getChildren().add(cont);
-		// add back
+
 	}
 
-	// removes old doors and creates 3 new ones
+	/**
+	 * Transition elements to create 3 new doors for difficulty, clears previous
+	 * nodes, sets state
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	private void transitionDifficulty(MouseEvent event) {
 
 		setState("Difficulty");
@@ -324,9 +266,9 @@ public class IntroController {
 
 		if (event.getSource() instanceof ImageView) {
 			ImageView clickedDoor = (ImageView) event.getSource();
-			if (clickedDoor.getId() == "AI")
+			if ("AI".equals(clickedDoor.getId()))
 				setAi(true);
-			else if (clickedDoor.getId() == "human")
+			else if ("human".equals(clickedDoor.getId()))
 				setHuman(true);
 		}
 
@@ -346,21 +288,27 @@ public class IntroController {
 		// Add new buttons to the scene
 		playSoloPane.getChildren().addAll(easy, medium);
 		playDuoPane.getChildren().add(hard);
-		System.out.println(anchorPane.getChildren());
 	}
 
-	private void selectClass(MouseEvent event) { // generate 5 doors to select class
+	/**
+	 * Creates new state to let user selectClass, 4 statues, each clickable which
+	 * will then start the game upon confirmation.
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
+	private void selectClass(MouseEvent event) {
+
+		// Clear previous elements to move to new screen
 		playSoloPane.getChildren().clear();
 		anchorPane.getChildren().clear();
 		playDuoPane.getChildren().clear();
 
 		setState("Class");
-		
+
 		Text text = new Text("Select Class");
 		configureNode(text, 430, 75, 202, 202, null, null);
 
 		text.setFont(loadCustomFont(50));
-	
 
 		highPane.setStyle(
 				"-fx-background-image: url('/images/class_select.png'); -fx-background-size: cover; -fx-background-repeat: no-repeat;");
@@ -369,9 +317,6 @@ public class IntroController {
 		configureNode(instruct, 420, 350, 0, 0, null, null);
 		instruct.setFont(loadCustomFont(40));
 
-		// place all 4 statues (placeholder imgs for now)
-		// each should have an event handler for on hover, as well as on select to
-		// confirm
 		ImageView vis = new ImageView();
 		vis.setId("Visionary");
 		configureNode(vis, 730, 350, 202, 202, "/images/vis_statue.png", e -> confirmClass(e));
@@ -386,12 +331,18 @@ public class IntroController {
 
 		ImageView nomad = new ImageView();
 		nomad.setId("Nomad");
-		configureNode(nomad, 880, 410, 202, 202, "/images/statue.png", e -> confirmClass(e));
+		configureNode(nomad, 880, 370, 202, 202, "/images/nomad_statue.png", e -> confirmClass(e));
 
 		anchorPane.getChildren().addAll(vis, run, psy, nomad, text);
 
 	}
 
+	/**
+	 * Confirms user choice to select a class, which then proceeds to start the
+	 * game, passing all data to new controller
+	 * 
+	 * @param event MouseEvent to trace event call
+	 */
 	private void confirmClass(MouseEvent e) {
 
 		ImageView imgView = (ImageView) e.getSource();
@@ -422,7 +373,13 @@ public class IntroController {
 		anchorPane.getChildren().remove((classInfoPane));
 	}
 
-	// add a custom pane that displays class-specific info on hover of a class
+	/**
+	 * Creates new menu popup to help user choose class, containing information,
+	 * abilites, skills and downsides.
+	 * 
+	 * @param imageView Access to direct imageView to paste
+	 * @param imagePath Contains user class name
+	 */
 	private void displayClassInfo(ImageView imageView, String imagePath) {
 		// If an info pane already exists, remove it first
 		if (classInfoPane != null || anchorPane.getChildren().contains(classInfoPane)) {
@@ -446,6 +403,7 @@ public class IntroController {
 		classDescription.setFill(Color.LIGHTGRAY);
 		classDescription.setWrappingWidth(380);
 
+		// Set title and description based on class clicked
 		String id = imageView.getId();
 		switch (id) {
 		case "Visionary":
@@ -479,11 +437,9 @@ public class IntroController {
 
 		classTitle.setLayoutX(10);
 		classTitle.setLayoutY(30);
-
 		classDescription.setLayoutX(10);
 		classDescription.setLayoutY(70);
 
-		// Optionally add an icon or image of the class (using imagePath)
 		if (imagePath != null) {
 			ImageView icon = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
 			icon.setFitWidth(64);
@@ -493,8 +449,9 @@ public class IntroController {
 			classInfoPane.getChildren().add(icon);
 		}
 
+		// Configure exit and continue buttons, on click removing or displaying more
+		// info accordingly.
 		Button exit = new Button();
-
 		configureNode(exit, 105, 10, 0, 0, null, e -> removeClassInfo(e, imageView, classInfoPane));
 		exit.setText("x");
 		exit.setStyle("-fx-background-color: rgba(0, 0, 0, 0.75);");
@@ -507,11 +464,103 @@ public class IntroController {
 		cont.setTextFill(Color.WHITE);
 
 		classInfoPane.getChildren().addAll(classTitle, classDescription, exit, cont);
-
-		// Add the pane to the anchorPane (or your root pane)
 		anchorPane.getChildren().add(classInfoPane);
 	}
 
+	// Goes to the previous state from second click, restarting the screen
+	private void handleChooseAiHumanBack(MouseEvent event) {
+		fadeIn(() -> {
+			anchorPane.getChildren().clear();
+			returnStart();
+			setState("Start");
+			setDuoActive(false);
+			fadeOut();
+		});
+	}
+
+	// Handles going back 1 state, removing all nodes from the pane that include
+	// name panes, as well as instructing texts
+	private void handleNameBack(MouseEvent event) {
+		fadeIn(() -> {
+			System.out.println(anchorPane.getChildren());
+			if (isSoloActive())
+				anchorPane.getChildren().remove(3); // remove the
+			else if (isDuoActive())
+				anchorPane.getChildren().remove(4);
+			anchorPane.getChildren().removeIf(node -> node.getId() != null
+					&& ((isSoloActive() || isAi()) && "NamePane1".equals(node.getId()))
+					|| (isDuoActive() && ("NamePane1".equals(node.getId()) || "NamePane2".equals(node.getId()))));
+
+			transitionDifficulty(event);
+			clickNoise();
+			fadeOut();
+		});
+
+	}
+
+	private void handleDifficultyBack() {
+		fadeIn(() -> {
+			if (isDuoActive()) {
+
+				for (Iterator<Node> iterator = anchorPane.getChildren().iterator(); iterator.hasNext();) {
+					Node node = iterator.next();
+					if (!"playSoloPane".equals(node.getId()) && !"playDuoPane".equals(node.getId())
+							&& !"welcome".equals(node.getId())) {
+						iterator.remove();
+					}
+				}
+
+				resetDuoMode();
+
+				transitionAiHuman();
+			} else if (isSoloActive()) {
+				anchorPane.getChildren().clear();
+				returnStart();
+				setSoloActive(false);
+				setState("Start");
+			}
+			fadeOut();
+		});
+	}
+
+	private void resetDuoMode() {
+		setSoloActive(false);
+		setDuoActive(false);
+		playSoloPane.getChildren().clear();
+		playDuoPane.getChildren().clear();
+		setState("chooseAiHuman");
+		transitionAiHuman();
+
+	}
+
+	public void soloClick(MouseEvent event) {
+		// Remove solo and duo buttons, transition directly to difficulty
+		setSoloActive(true);
+
+		fadeIn(() -> {
+			clickNoise();
+			transitionDifficulty(event);
+
+			ImageView back = new ImageView();
+			back.setId("back");
+			configureNode(back, 30, 700, 140, 90, "/images/back.png", e -> back(event));
+
+			anchorPane.getChildren().add(back);
+
+			fadeOut();
+		});
+
+	}
+
+	/**
+	 * Creates a new pane for user to understand each class's concept, ability and
+	 * information/downsides, depending on the class clicked
+	 * 
+	 * @param event         MouseEvent to trace event call
+	 * @param imageView     image to access and configure
+	 * @param classInfoPane infopane to clear and paste information
+	 * @param class         Id name
+	 */
 	private void displayClassAbility(MouseEvent e, ImageView imageView, Pane classInfoPane, String id) {
 		classInfoPane.getChildren().clear();
 
@@ -572,11 +621,23 @@ public class IntroController {
 
 	}
 
+	/**
+	 * Configures a set node given its placement, or image attached, or onclick
+	 * feature, places and styles accordingly
+	 * 
+	 * @param x       X-axis placement
+	 * @param y       Y-axis placement
+	 * @param double  width, width of image or node
+	 * @param double  height: height of node
+	 * @param String  imagePath imagePath associated with node if an image
+	 * @param onClick to trigger a function on a nodes click
+	 */
 	private void configureNode(Node node, double x, double y, double width, double height, String imagePath,
 			EventHandler<? super MouseEvent> onClick) {
 		node.setLayoutX(x);
 		node.setLayoutY(y);
 
+		// If an imageview, set placement, and adding styling
 		if (node instanceof ImageView imageView) {
 			imageView.setFitWidth(width);
 			imageView.setFitHeight(height);
@@ -600,7 +661,6 @@ public class IntroController {
 		} else if (node instanceof Text text) {
 			text.setFill(javafx.scene.paint.Color.WHITE);
 		}
-		// Add more types as needed
 
 		if (node instanceof ImageView imageView) {
 			imageView.setOnMouseClicked(event -> {
@@ -610,7 +670,6 @@ public class IntroController {
 						onClick.handle(event);
 					}
 				} else if (event.getButton() == MouseButton.SECONDARY) {
-					// Right-click: Show class info
 					displayClassInfo(imageView, imagePath);
 				}
 			});
@@ -622,6 +681,16 @@ public class IntroController {
 
 	}
 
+	/**
+	 * Configures a door image
+	 * 
+	 * @param x       X-axis placement
+	 * @param y       Y-axis placement
+	 * @param double  width, width of image or node
+	 * @param double  height: height of node
+	 * @param String  imagePath imagePath associated with node if an image
+	 * @param onClick to trigger a function on a nodes click
+	 */
 	private ImageView createDoor(String text, double layoutX, double layoutY, double width, double height,
 			EventHandler<MouseEvent> onClickHandler) {
 		ImageView img = new ImageView();
@@ -670,19 +739,12 @@ public class IntroController {
 	private void returnStart() {
 
 		try {
-			// Create the FXMLLoader and set the location
+
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/introscreen.fxml"));
-
-			// Optional: set a custom controller if needed
-			loader.setController(new IntroController()); // if you need to pass something in the constructor
-
-			// Load the root node from the FXML
+			loader.setController(new IntroController());
 			Parent root = loader.load();
 
-			// Create a new scene with the loaded root
 			Scene scene = new Scene(root);
-
-			// Get the current stage and set the new scene
 			Stage stage = (Stage) anchorPane.getScene().getWindow();
 			stage.setScene(scene);
 			stage.show();
@@ -692,7 +754,7 @@ public class IntroController {
 		}
 	}
 
-	// Switch to the actual maze, (tutorial will be incl in main screen)
+	// Switch to the actual maze game screen
 	private void startGame(MouseEvent event) {
 
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -742,7 +804,7 @@ public class IntroController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Font.font("Arial", fontSize); // Fallback to Arial if any error occurs
+			return Font.font("Arial", fontSize); 
 		}
 	}
 

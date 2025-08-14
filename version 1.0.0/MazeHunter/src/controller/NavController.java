@@ -27,26 +27,22 @@ public class NavController {
 
 	private MediaPlayer player;
 
-	private static final Image SIGN_IMAGE;
-	private static final Image SIGN_CLICK_IMAGE;
-
-	static {
-		SIGN_IMAGE = new Image(NavController.class.getResource("/images/sign.png").toExternalForm());
-		SIGN_CLICK_IMAGE = new Image(NavController.class.getResource("/images/signClick.png").toExternalForm());
-	}
+	private Image signImage;
+	private Image signClickImage;
+	
 
 	@FXML
 	public void mouseHover(MouseEvent event) {
-		// Your code here, e.g. print or handle hover event
+
 		ImageView sign = (ImageView) event.getSource();
-		sign.setImage(SIGN_CLICK_IMAGE);
+		sign.setImage(getSignClickImage());
 	}
 
 	@FXML
 	public void mouseExit(MouseEvent event) {
 
 		ImageView sign = (ImageView) event.getSource();
-		sign.setImage(SIGN_IMAGE);
+		sign.setImage(getSignImage());
 	}
 
 	//Set stage, stop music and restart screen
@@ -99,6 +95,21 @@ public class NavController {
 	public void setWinScreen(WinScreen winScreen) {
 		this.winScreen = winScreen;
 
+	}
+	
+
+	public Image getSignImage() {
+	    if (signImage == null) {
+	        signImage = new Image(getClass().getResource("/images/sign.png").toExternalForm());
+	    }
+	    return signImage;
+	}
+
+	public Image getSignClickImage() {
+	    if (signClickImage == null) {
+	        signClickImage = new Image(getClass().getResource("/images/signClick.png").toExternalForm());
+	    }
+	    return signClickImage;
 	}
 
 	public WinScreen getWinscreen() {

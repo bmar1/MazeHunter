@@ -36,7 +36,7 @@ public class Fog {
 		this.cellSize = cellSize;
 		this.visionRadius = radius;
 
-		// Full maze coverage
+		// Cover the entire screen
 		fogCanvas = new Canvas(sCREEN_SIZE, sCREEN_SIZE2);
 		fogCanvas.setLayoutX(0);
 		fogCanvas.setLayoutY(0);
@@ -54,6 +54,11 @@ public class Fog {
 
 	}
 
+	/*
+	 * Update and draw new fog area depending new player position as center, using
+	 * radius and distance only reveal a certain area Interact with ability (light
+	 * beam) and check if it pierces fog.
+	 */
 	public void updateAndDraw(int playerMazeX, int playerMazeY, int visionRadius, int[][] mazeGrid) {
 		int visibleTiles = visionRadius * 2 + 1;
 		int gridPixelSize = visibleTiles * (int) this.cellSize;
@@ -65,35 +70,29 @@ public class Fog {
 		int mazeStartX = playerMazeX - visionRadius;
 		int mazeStartY = playerMazeY - visionRadius;
 
+		// Maze offset, since it covers the whole screen, versus the visible content
+		// pane (not whole screen)
 		double offsetX = (this.fogCanvas.getWidth() - gridPixelSize) / 2.0;
 		double offsetY = (this.fogCanvas.getHeight() - gridPixelSize) / 2.0;
 
-
-		// 1. Paint the ENTIRE 980x980 canvas solid black.
 		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, fogCanvas.getWidth(), fogCanvas.getHeight());
 
-		// 2. Loop through the on-screen grid cells.
-
 		for (int row = 0; row < visibleTiles + 2; row++) {
-
 			for (int col = 0; col < visibleTiles + 2; col++) {
 
-				// A. Convert the on-screen grid cell (row, col) to its true MAZE coordinate.
 				int currentMazeX = mazeStartX + row;
 				int currentMazeY = mazeStartY + col;
 
-				// B. Calculate the distance from this maze tile to the player's maze tile.
+				// calculate distance and reveal based on it
 				double distance = Math
 						.sqrt(Math.pow(currentMazeX - playerMazeX, 2) + Math.pow(currentMazeY - playerMazeY, 2));
 
 				double screenX = (col * intCellSize) + offsetX;
 				double screenY = (row * intCellSize) + offsetY;
 
-				// C. Get the opacity based on that distance.
 				double opacity = calculateOpacity(distance, visionRadius, row, col);
 
-				// If the area is already solid black, no need to draw over it.
 				if (opacity >= 1.0)
 					continue;
 
@@ -101,7 +100,6 @@ public class Fog {
 						&& temporaryRevealPath.contains(new Point2D(col, row)));
 
 				if (distance <= visionRadius) {
-
 					gc.clearRect(screenX, screenY, intCellSize, intCellSize);
 
 					gc.setFill(new Color(0, 0, 0, opacity));
@@ -113,17 +111,11 @@ public class Fog {
 					int cellType = getCellTypeFromMaze(currentMazeX, currentMazeY, mazeGrid);
 					Image tileImage = tileImageCache.get(cellType);
 					if (tileImage != null) {
-						System.out.println("DRAWING ON FOG " + col + " " + row); // screenX or Y could be wrong along
-																					// with its offset?
+
 						gc.drawImage(tileImage, screenX, screenY, intCellSize + 1, intCellSize);
-
 					}
+				} else if (Math.abs(distance - visionRadius) < 1) {
 
-				}
-
-				else if (Math.abs(distance - visionRadius) < 1) {
-					// We are on the FUZZY EDGE. For this, we still draw a semi-transparent black
-					// square.
 					gc.setFill(new Color(0, 0, 0, opacity));
 					gc.fillRect(screenX, screenY, cellSize, cellSize);
 				}
@@ -150,7 +142,7 @@ public class Fog {
 
 		}
 
-		// If not temporarily revealed, fall back to the original distance logic.
+		// If not temporarily revealed, fall back to radius logic
 		if (distance > radius)
 			return 1.0;
 		if (Math.abs(distance - radius) < 1)
