@@ -488,7 +488,7 @@ public class PlayerController {
 	//Checks if an exit is valid
 	private void checkExit(int newX, int newY) {
 		if (gameController.getMaze().isExit(newX, newY, gameController.getMaze().getGrid())) {
-			if (gameController.getCounter() == 0) {
+			if (gameController.getCounter() <= 1) {
 				showWinScreen();
 			} else {
 				int ctr = gameController.getCounter() - 1;

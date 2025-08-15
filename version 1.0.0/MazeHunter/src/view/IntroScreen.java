@@ -59,12 +59,14 @@ public class IntroScreen extends Application{
 		primaryStage.setResizable(false);
 		
 		
-		Media bg = new Media(getClass().getResource("/sounds/intromusic.mp3").toExternalForm());
-		MediaPlayer player = new MediaPlayer(bg);
-		setPlayer(player);
-		player.setCycleCount(4);
-		player.setVolume(0.10);
-		player.play();
+		
+		String musicResource = getClass().getResource("/sounds/intromusic.mp3").toExternalForm();
+		Media media = new Media(musicResource);
+		MediaPlayer mediaPlayer = new MediaPlayer(media);
+		mediaPlayer.play();
+		mediaPlayer.setCycleCount(4);
+		mediaPlayer.setVolume(0.10);
+		setPlayer(mediaPlayer);
 		
 		introController.initialize();
 		introController.setIntroScreen(this);

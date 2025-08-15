@@ -61,13 +61,14 @@ public class GameScreen extends Application {
 			gameController = new GameController(root, grid, this, introController, hudLayer);
 			gameController.setIntroController(introController);
 
-			Media bg = new Media(getClass().getResource("/sounds/mazemusic.mp3").toExternalForm());
-			player = new MediaPlayer(bg);
-			player.setCycleCount(MediaPlayer.INDEFINITE);
-			player.setVolume(0.30);
-			player.play();
+			String musicResource = getClass().getResource("/sounds/mazemusic.mp3").toExternalForm();
+			Media media = new Media(musicResource);
+			MediaPlayer mediaPlayer = new MediaPlayer(media);
+			mediaPlayer.play();
+			mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+			mediaPlayer.setVolume(0.30);
 
-			setPlayer(player);
+			setPlayer(mediaPlayer);
 
 			playerController = new PlayerController(root, grid, gameController);
 
