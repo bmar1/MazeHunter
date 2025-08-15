@@ -1,0 +1,63 @@
+.root {
+    -fx-background-color: #1a1a1a; 
+    -fx-font-family: 'Verdana';
+}
+
+
+.title-label {
+    -fx-font-family: 'Morris Roman';
+    -fx-font-size: 40px;
+    -fx-text-fill: #e0e0e0; 
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 5, 0, 0, 1);
+}
+
+.step-button {
+	-fx-font-size: 15px; 
+	   -fx-font-weight: bold;
+	   -fx-text-fill: #e0e0e0; 
+	   -fx-background-color: #444444;
+	   -fx-border-color: #666666;
+	   -fx-border-width: 2px;
+	  
+	   -fx-min-width: 40px;
+	   -fx-min-height:40px;
+	   -fx-max-width: 40px;
+	   -fx-max-height: 40px;
+
+	   -fx-background-radius: 25px; 
+	   -fx-border-radius: 25px;
+	   -fx-alignment: center;
+}
+
+
+.step-button:hover {
+    -fx-background-color: #555555;
+    -fx-cursor: hand;
+}
+
+.step-button-active {
+    -fx-background-color: #BFA588; 
+    -fx-text-fill: #1a1a1a;
+    -fx-border-color: #ffffff;
+}
+
+.step-line {
+    -fx-stroke: #666666;
+    -fx-stroke-width: 2px;
+}
+
+
+.description-area {
+    -fx-font-family: 'Morris Roman';
+    -fx-font-size: 25px;
+    -fx-border-color: #444444;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    
+    -fx-background-insets: 0;
+    -fx-padding: 10px;
+}
+
+.description-area .content {
+    -fx-background-color: transparent;
+}
