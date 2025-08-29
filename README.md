@@ -1,12 +1,14 @@
 MazeHunter 🎮
 
-MazeHunter is a Java-based maze adventure game where players race against the clock to escape increasingly complex mazes. With unique classes, abilities, and passives, every run feels different — and every choice matters.
+MazeHunter is a Java-based maze adventure game where players race to find an exit through the perlious maze, with unique classes, 
+abilites and passives, along with maze layering, the difficulty can get hard you must be strategic.
+
 
 🔑 Features
 
 Player Classes – Choose from specialized classes, each with unique abilities, passives, and debuffs that change how you approach the maze.
 
-Abilities & Passives – Break through walls, sprint, sense exits, or reveal hidden paths — but use them wisely, cooldowns and debuffs keep things balanced.
+Abilities & Passives – Break through walls, sprint, sense exits, or reveal hidden paths but use them wisely, cooldowns and debuffs keep things balanced.
 
 Fog of War – Only see what’s around you; expand your vision as you move. Some classes can even bend the fog to their advantage.
 
