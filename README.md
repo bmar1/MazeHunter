@@ -36,7 +36,7 @@ AI Allies – Smarter pathfinding with class-based abilities, able to help you o
   </a>
   &nbsp;&nbsp;
   <a href="https://maven.apache.org/" target="_blank" rel="noreferrer noopener">
-    <img alt="Maven" height="100" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fblog.devops.dev%2Fdevops-lab-1-installing-apache-maven-and-deploying-a-java-application-8c5061bd9b99&psig=AOvVaw3PwJBFAU2eaxPFeWCNsJYd&ust=1757019945452000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCT1L-_vY8DFQAAAAAdAAAAABAE">
+    <img alt="Maven" height="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsgbzUuAfmCXSjLUkPNBR1YkDiONbBsCezrw&s">
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/EsotericSoftware/kryonet" target="_blank" rel="noreferrer noopener">
