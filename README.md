@@ -1,32 +1,39 @@
-MazeHunter 🎮
+# MazeHunter 🎮
 
 MazeHunter is a Java-based maze adventure game where players race to find an exit through the perlious maze, with unique classes, 
 abilites and passives, along with maze layering, the difficulty can get hard you must be strategic.
 
 
-🔑 Features
+🔑 ### Features
 
-Player Classes – Choose from specialized classes, each with unique abilities, passives, and debuffs that change how you approach the maze.
+- Player Classes – Choose from specialized classes, each with unique abilities, passives, and debuffs that change how you approach the maze.
+- Abilities & Passives – Break through walls, sprint, sense exits, or reveal hidden paths but use them wisely, cooldowns and debuffs keep things balanced.
+- Fog of War – Only see what’s around you; expand your vision as you move. Some classes can even bend the fog to their advantage.
+- Maze Layering & Difficulty – Mazes scale in size and complexity, introducing multiple exits, dead ends, and evolving challenges the deeper you go.
+- Atmosphere – Immersive music and sound effects pull you into the maze, with timers and ability icons keeping tension high.
 
-Abilities & Passives – Break through walls, sprint, sense exits, or reveal hidden paths but use them wisely, cooldowns and debuffs keep things balanced.
+## Getting Started
 
-Fog of War – Only see what’s around you; expand your vision as you move. Some classes can even bend the fog to their advantage.
+### Dependencies
+- You must have JDK 23
+- Along with this, you must have a recent JRE
+- Visual C++
+- Windows
 
-Maze Layering & Difficulty – Mazes scale in size and complexity, introducing multiple exits, dead ends, and evolving challenges the deeper you go.
+### Installation
+- Simply see the releases tab, installing the .exe file along with the custom runtime to run the project!
 
-Atmosphere – Immersive music and sound effects pull you into the maze, with timers and ability icons keeping tension high.
-
-🚧 Coming Soon
+🚧 ### Coming Soon
 
 Multiplayer – Compete with friends together to find a way out!
 AI Allies – Smarter pathfinding with class-based abilities, able to help you or outsmart you.
 
-🛠️ Built With
+🛠️ ### Built With
+[![Java](https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg)](https://www.java.com/)  
+[![Maven](https://raw.githubusercontent.com/devicons/devicon/master/icons/maven/maven-original.svg)](https://maven.apache.org/)  
+[![KryoNet](https://avatars.githubusercontent.com/u/231648?s=200&v=4)](https://github.com/EsotericSoftware/kryonet)  
+[![JavaFX](https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/OpenJFX/JavaFX/20.0.1/OpenJFX.JavaFX.installerIcon.png)](https://openjfx.io/)  
+[![CSS](https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg)](https://www.w3.org/Style/CSS/Overview.en.html)  
+[![FXML](https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png)](https://openjfx.io/javadoc/11/javafx.fxml/javafx/fxml/package-summary.html)  
 
-Java
-Maven
-KyroNet (Network)
-JavaFX (GUI, visuals)
 
-To install:
-Simply extract and download MazeHunter from releases, specifically with its runtime folder, plug and play!
