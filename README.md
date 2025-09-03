@@ -36,7 +36,7 @@ AI Allies – Smarter pathfinding with class-based abilities, able to help you o
   </a>
   &nbsp;&nbsp;
   <a href="https://maven.apache.org/" target="_blank" rel="noreferrer noopener">
-    <img alt="Maven" height="100" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Apache_Maven_logo.svg/340px-Apache_Maven_logo.svg.png">
+    <img alt="Maven" height="100" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fblog.devops.dev%2Fdevops-lab-1-installing-apache-maven-and-deploying-a-java-application-8c5061bd9b99&psig=AOvVaw3PwJBFAU2eaxPFeWCNsJYd&ust=1757019945452000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCT1L-_vY8DFQAAAAAdAAAAABAE">
   </a>
   &nbsp;&nbsp;
   <a href="https://github.com/EsotericSoftware/kryonet" target="_blank" rel="noreferrer noopener">
@@ -44,7 +44,7 @@ AI Allies – Smarter pathfinding with class-based abilities, able to help you o
   </a>
   &nbsp;&nbsp;
   <a href="https://openjfx.io/" target="_blank" rel="noreferrer noopener">
-    <img alt="JavaFX" height="100" src="https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png">
+    <img alt="JavaFX" height="100" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.qftest.com%2Fen%2Fblog%2Farticle%2Fis-fx-even-still-alive-javafx-adopters-meeting-2021.html&psig=AOvVaw0Ifelb3RoWE-wiuft5a6WJ&ust=1757019899895000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMiBqaq_vY8DFQAAAAAdAAAAABAE">
   </a>
   &nbsp;&nbsp;
   <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank" rel="noreferrer noopener">
@@ -52,7 +52,7 @@ AI Allies – Smarter pathfinding with class-based abilities, able to help you o
   </a>
   &nbsp;&nbsp;
   <a href="https://openjfx.io/javadoc/23/javafx.fxml/javafx/fxml/package-summary.html" target="_blank" rel="noreferrer noopener">
-    <img alt="FXML" height="100" src="https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png">
+    <img alt="FXML" height="100" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.com%2Ffree-icon%2Fxml_136526&psig=AOvVaw38ZwjWopRBz4iMPKWSsZ5h&ust=1757019992827000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjC5da_vY8DFQAAAAAdAAAAABAE">
   </a>
 </p>
 
