@@ -29,11 +29,28 @@ Multiplayer – Compete with friends together to find a way out!
 AI Allies – Smarter pathfinding with class-based abilities, able to help you or outsmart you.
 
 🛠️ ### Built With
-[![Java](https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg)](https://www.java.com/)  
-[![Maven](https://raw.githubusercontent.com/devicons/devicon/master/icons/maven/maven-original.svg)](https://maven.apache.org/)  
-[![KryoNet](https://avatars.githubusercontent.com/u/231648?s=200&v=4)](https://github.com/EsotericSoftware/kryonet)  
-[![JavaFX](https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/OpenJFX/JavaFX/20.0.1/OpenJFX.JavaFX.installerIcon.png)](https://openjfx.io/)  
-[![CSS](https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg)](https://www.w3.org/Style/CSS/Overview.en.html)  
-[![FXML](https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png)](https://openjfx.io/javadoc/11/javafx.fxml/javafx/fxml/package-summary.html)  
+<a href="https://www.java.com/">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" height="100" />
+</a>  
+
+<a href="https://maven.apache.org/">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/maven/maven-original.svg" height="100" />
+</a>  
+
+<a href="https://github.com/EsotericSoftware/kryonet">
+  <img src="https://avatars.githubusercontent.com/u/231648?s=200&v=4" height="100" />
+</a>  
+
+<a href="https://openjfx.io/">
+  <img src="https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/OpenJFX/JavaFX/20.0.1/OpenJFX.JavaFX.installerIcon.png" height="100" />
+</a>  
+
+<a href="https://www.w3.org/Style/CSS/Overview.en.html">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg" height="100" />
+</a>  
+
+<a href="https://openjfx.io/javadoc/11/javafx.fxml/javafx/fxml/package-summary.html">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png" height="100" />
+</a>  
 
 
