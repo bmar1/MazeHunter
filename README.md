@@ -4,7 +4,7 @@ MazeHunter is a Java-based maze adventure game where players race to find an exi
 abilites and passives, along with maze layering, the difficulty can get hard you must be strategic.
 
 
-🔑 ### Features
+ ### 🔑Features
 
 - Player Classes – Choose from specialized classes, each with unique abilities, passives, and debuffs that change how you approach the maze.
 - Abilities & Passives – Break through walls, sprint, sense exits, or reveal hidden paths but use them wisely, cooldowns and debuffs keep things balanced.
@@ -23,12 +23,12 @@ abilites and passives, along with maze layering, the difficulty can get hard you
 ### Installation
 - Simply see the releases tab, installing the .exe file along with the custom runtime to run the project!
 
-🚧 ### Coming Soon
+### 🚧 Coming Soon
 
 Multiplayer – Compete with friends together to find a way out!
 AI Allies – Smarter pathfinding with class-based abilities, able to help you or outsmart you.
 
-🛠️ ### Built With
+### 🛠️ Built With
 
 <p>
   <a href="https://www.java.com/" target="_blank" rel="noreferrer">
