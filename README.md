@@ -30,36 +30,28 @@ AI Allies – Smarter pathfinding with class-based abilities, able to help you o
 
 ### 🛠️ Built With
 
-<p>
-  <a href="https://www.java.com/" target="_blank" rel="noreferrer">
+<p align="center">
+  <a href="https://www.java.com/" target="_blank" rel="noreferrer noopener">
     <img alt="Java" height="100" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg">
   </a>
-</p>
-
-<a href="https://maven.apache.org/">
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/maven/maven-original.svg" height="100" />
-</a>  
-
-<p>
-  <a href="https://github.com/EsotericSoftware/kryonet" target="_blank" rel="noreferrer">
-    <img alt="KryoNet" height="100" src="https://img.shields.io/badge/KryoNet-EsotericSoftware-555555">
+  &nbsp;&nbsp;
+  <a href="https://maven.apache.org/" target="_blank" rel="noreferrer noopener">
+    <img alt="Maven" height="100" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Apache_Maven_logo.svg/340px-Apache_Maven_logo.svg.png">
   </a>
-</p>
-
-<p>
-  <a href="https://openjfx.io/" target="_blank" rel="noreferrer">
+  &nbsp;&nbsp;
+  <a href="https://github.com/EsotericSoftware/kryonet" target="_blank" rel="noreferrer noopener">
+    <img alt="KryoNet" height="100" src="https://avatars.githubusercontent.com/u/231648?s=200&v=4">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://openjfx.io/" target="_blank" rel="noreferrer noopener">
     <img alt="JavaFX" height="100" src="https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png">
   </a>
-</p>
-
-<p>
-  <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank" rel="noreferrer">
+  &nbsp;&nbsp;
+  <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank" rel="noreferrer noopener">
     <img alt="CSS3" height="100" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
   </a>
-</p>
-
-<p>
-  <a href="https://openjfx.io/javadoc/23/javafx.fxml/javafx/fxml/package-summary.html" target="_blank" rel="noreferrer">
+  &nbsp;&nbsp;
+  <a href="https://openjfx.io/javadoc/23/javafx.fxml/javafx/fxml/package-summary.html" target="_blank" rel="noreferrer noopener">
     <img alt="FXML" height="100" src="https://upload.wikimedia.org/wikipedia/commons/0/03/JavaFX_Logo.png">
   </a>
 </p>
