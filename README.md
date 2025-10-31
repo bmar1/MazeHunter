@@ -4,9 +4,16 @@ MazeHunter is a Java-based maze adventure game where players race to find an exi
 abilites and passives, along with maze layering, the difficulty can get hard; you must be strategic.
 
 # Demo Photos
-![MazeHunter Demo](./version%201.0.0/MazeHunter/resources/images/demo.png)
-![MazeHunter Ability](./version%201.0.0/MazeHunter/resources/images/demo1.gif)
-
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="./version%201.0.0/MazeHunter/resources/images/demo1.gif" alt="MazeHunter Demo" width="100%"/>
+    </td>
+    <td width="50%" align="center">
+      <img src="./version%201.0.0/MazeHunter/resources/images/demo.png" alt="MazeHunter Ability" width="100%"/>
+    </td>
+  </tr>
+</table>
 
  ### 🔑Features
 
