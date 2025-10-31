@@ -1,21 +1,21 @@
 # MazeHunter 🎮
 
-MazeHunter is a Java-based maze adventure game where players race to find an exit through the perlious maze, with unique classes, 
-abilites and passives, along with maze layering, the difficulty can get hard you must be strategic.
+MazeHunter is a Java-based maze adventure game where players race to find an exit through the perilous maze, with unique classes, 
+abilites and passives, along with maze layering, the difficulty can get hard; you must be strategic.
 
 
  ### 🔑Features
 
-- Player Classes – Choose from specialized classes, each with unique abilities, passives, and debuffs that change how you approach the maze.
-- Abilities & Passives – Break through walls, sprint, sense exits, or reveal hidden paths but use them wisely, cooldowns and debuffs keep things balanced.
-- Fog of War – Only see what’s around you; expand your vision as you move. Some classes can even bend the fog to their advantage.
-- Maze Layering & Difficulty – Mazes scale in size and complexity, introducing multiple exits, dead ends, and evolving challenges the deeper you go.
-- Atmosphere – Immersive music and sound effects pull you into the maze, with timers and ability icons keeping tension high.
+- Player Classes: Choose from specialized classes, each with unique abilities, passives, and debuffs that change how you approach the maze.
+- Abilities & Passives: Phase through walls, sprint, sense exits, or reveal hidden paths, but use them wisely. Cooldowns and debuffs keep things balanced.
+- Fog of War: Only see what’s around you; expand your vision as you move. Some classes can even bend the fog to their advantage.
+- Maze Layering & Difficulty: Mazes scale in size and complexity, introducing multiple exits, dead ends, and evolving challenges the deeper you go.
+- Atmosphere: Immersive music and sound effects pull you into the maze, with timers and ability icons keeping tension high.
 
 ## Getting Started
 
 ### Dependencies
-- You must have JDK 23
+- You must have JDK/JVM
 - Along with this, you must have a recent JRE
 - Visual C++
 - Windows
