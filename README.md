@@ -26,6 +26,7 @@ abilites and passives, along with maze layering, the difficulty can get hard; yo
 ### 🚧 Coming Soon
 
 Multiplayer – Compete with friends together to find a way out!
+
 AI Allies – Smarter pathfinding with class-based abilities, able to help you or outsmart you.
 
 ### 🛠️ Built With
