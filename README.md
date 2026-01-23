@@ -1,19 +1,9 @@
-# 🏰 MazeHunter
+# <img src="./version%201.0.0/MazeHunter/resources/images/icon.png" alt="Icon" width="27" height="27"> MazeHunter
 > A Java-based maze adventure game where players race to find an exit through perilous mazes with unique classes, abilities, and strategic gameplay.
-
-<p align="center">
-  <img src="./version%201.0.0/MazeHunter/resources/images/icon.png" alt="MazeHunter Logo" width="200"/>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version"/>
-  <img src="https://img.shields.io/badge/platform-Windows-lightgrey.svg" alt="Platform"/>
-  <img src="https://img.shields.io/badge/Java-17+-orange.svg" alt="Java Version"/>
-</p>
 
 ---
 
-## 📸 Gameplay Preview
+## Gameplay Preview
 
 <table>
   <tr>
@@ -32,12 +22,12 @@
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🎭 Player Classes
+### Player Classes
 Choose from specialized classes, each with unique abilities, passives, and debuffs that fundamentally change your approach to the maze.
 
-### ⚡ Abilities & Passives
+### Abilities & Passives
 - **Phase** through walls
 - **Sprint** across corridors
 - **Sense** hidden exits
@@ -45,24 +35,24 @@ Choose from specialized classes, each with unique abilities, passives, and debuf
 
 Strategic cooldown management and debuff awareness keep gameplay balanced and engaging.
 
-### 🌫️ Fog of War
+### Fog of War
 Experience limited vision that expands as you explore. Only see what's immediately around you—certain classes can manipulate the fog to gain tactical advantages.
 
-### 🗺️ Maze Layering & Difficulty
+### Maze Layering & Difficulty
 Mazes dynamically scale in size and complexity:
 - Multiple exit points
 - Intricate dead ends
 - Evolving challenges as you progress deeper
 - Increasing strategic depth with each layer
 
-### 🎵 Immersive Atmosphere
+### Immersive Atmosphere
 - Atmospheric music and sound effects
 - Real-time ability cooldown indicators
 - Tension-building timer mechanics
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **JDK/JVM** (Java 17 or higher recommended)
@@ -82,12 +72,12 @@ Mazes dynamically scale in size and complexity:
 ## 🚧 Roadmap
 
 ### Upcoming Features
-- **🌐 Multiplayer Mode** – Compete or cooperate with friends to escape the maze
-- **🤖 AI Allies** – Intelligent pathfinding companions with class-based abilities who can assist or challenge you
+- **Multiplayer Mode** – Compete or cooperate with friends to escape the maze
+- **AI Allies** – Intelligent pathfinding companions with class-based abilities who can assist or challenge you
 
 ---
 
-## 🛠️ Built With
+## Built With
 
 <p align="center">
   <a href="https://www.java.com/" target="_blank" rel="noreferrer noopener">
