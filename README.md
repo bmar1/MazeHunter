@@ -79,30 +79,18 @@ Mazes dynamically scale in size and complexity:
 
 ## Built With
 
+## Built With
+
 <p align="center">
-  <a href="https://www.java.com/" target="_blank" rel="noreferrer noopener">
-    <img alt="Java" height="80" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://maven.apache.org/" target="_blank" rel="noreferrer noopener">
-    <img alt="Maven" height="80" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsgbzUuAfmCXSjLUkPNBR1YkDiONbBsCezrw&s">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/EsotericSoftware/kryonet" target="_blank" rel="noreferrer noopener">
-    <img alt="KryoNet" height="80" src="https://avatars.githubusercontent.com/u/7714919?s=64&v=4">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://openjfx.io/" target="_blank" rel="noreferrer noopener">
-    <img alt="JavaFX" height="80" src="https://www.qftest.com/blog/resources/JavaFX.png">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank" rel="noreferrer noopener">
-    <img alt="CSS3" height="80" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://openjfx.io/javadoc/23/javafx.fxml/javafx/fxml/package-summary.html" target="_blank" rel="noreferrer noopener">
-    <img alt="FXML" height="80" src="https://cdn-icons-png.flaticon.com/512/136/136526.png">
-  </a>
+  <img src="https://img.shields.io/badge/Java-17+-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
+  <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven"/>
+  <img src="https://img.shields.io/badge/JavaFX-007396?style=for-the-badge&logo=java&logoColor=white" alt="JavaFX"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/KryoNet-Networking-4A90E2?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMiA3TDEyIDEyTDIyIDdMMTIgMloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yIDEyTDEyIDE3TDIyIDEyIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+" alt="KryoNet"/>
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
+  <img src="https://img.shields.io/badge/FXML-5382A1?style=for-the-badge&logo=xml&logoColor=white" alt="FXML"/>
 </p>
 
 ---
